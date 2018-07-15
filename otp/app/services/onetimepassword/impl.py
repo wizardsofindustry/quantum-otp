@@ -6,15 +6,13 @@ from .base import BaseOneTimePasswordService
 
 class OneTimePasswordService(BaseOneTimePasswordService):
     """Exposes an API to generate and verify One-Time Passwords (OTPs)."""
-    kinds = {
-        'totp': pyotp.TOTP,
-        'hotp': pyotp.HOTP
-    }
 
     def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
+        if kind not in ('totp','hotp'):
+            raise ValueError(f'Invalid OTP type: {kind}')
         secret = pyotp.random_base32()
-        otp = self.kinds[kind](secret)
+        otp = getattr(pyotp, kind.upper())(secret)
         uri = otp.provisioning_uri(nsid, issuer_name=issuer)
         return self.dto(link=uri)
 
