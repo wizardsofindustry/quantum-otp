@@ -12,17 +12,18 @@
 openapi: "3.0.0"
 info:
   version: "1.0.0"
-  title: <provide a title for this API>
+  title: Subject One-Time Password Service
   description: >
-    The description for this API may
-    span multiple lines.
-  termsOfService: TOS
+    This service exposes an API to generate, refresh, remove and verify
+    One-Time Passwords (OTPs) for Subjects in a Quantum system.
+  termsOfService: https://www.wizardsofindustry.net
   contact:
-    name: <enter the name of the person or entity responsible for this API>
-    url: https://api.example.com
-    email: maintainer@api.example.com
+    name: Cochise Ruhulessin
+    url: https://www.wizardsofindustry.net/projects/quantum
+    email: cochise.ruhulessin@wizardsofindustry.net
   license:
-    name: <enter your license>
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 servers:
 - url: https://otp.dev.quantumframework.org:8443
   description: Local development server
