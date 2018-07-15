@@ -18,6 +18,8 @@ class OneTimePasswordService(BaseOneTimePasswordService):
             storage_class='otp',
             kind=kind,
             gsid=gsid,
+            nsid=nsid,
+            issuer=issuer,
             secret=secret,
             counter=getattr(otp, 'interval', 0) # initialize counter at 0 if HOTP
         )
