@@ -1,4 +1,6 @@
 """Contains the concrete implementation of :class:`BaseOneTimePasswordCtrl`."""
+from sq.exceptions import EndpointDoesNotExist
+
 from .base import BaseOneTimePasswordCtrl
 
 
@@ -7,7 +9,7 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
     endpoint.
     """
 
-    async def post(self, request, kind, gsid): #pylint: disable=arguments-differ
+    async def post(self, request, *args, **kwargs):
         """Generate a new One-Time Password for the :class`Subject`
         identified in the request URI.
 
@@ -18,7 +20,10 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         Returns:
             :class:`~sq.interfaces.http.response.Response`
         """
-        return self.render(request, 201, self.otp.generate(kind, gsid))
+        if kwargs.get('kind') not in ('totp', 'hotp'):
+            raise EndpointDoesNotExist(url=request.path)
+        return self.render(request, 201,
+            self.otp.generate(kwargs['kind'], **request.payload))
 
     async def put(self, request, kind, gsid, *args, **kwargs): #pylint: disable=arguments-differ
         raise NotImplementedError("Subclasses must override this method.")
@@ -44,10 +49,11 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         mimetype = self.default_mimetype
         if 'Accept' in request.headers:
             mimetype = request.accept_mimetypes.best_match(self.image.accept)
-        if mimetype is not None:
-            # The client has requested to receive the OTP link
-            # as a QR image.
-            content = self.image.generate(content.link)
-            assert isinstance(content, bytes)
+            if mimetype is not None:
+                raise Exception(mimetype, request.headers)
+                # The client has requested to receive the OTP link
+                # as a QR image.
+                content = self.image.generate(content.link)
+                assert isinstance(content, bytes)
         return self.render_to_response(content,
             content_type=mimetype, status_code=status)

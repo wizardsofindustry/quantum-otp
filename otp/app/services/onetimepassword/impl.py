@@ -11,11 +11,11 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         'hotp': pyotp.HOTP
     }
 
-    def generate(self, kind, gsid, ident=None, issuer=None):
+    def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
         secret = pyotp.random_base32()
         otp = self.kinds[kind](secret)
-        uri = otp.provisioning_uri(ident or "boo@foo.bar", issuer_name="Wizards of Industry")
+        uri = otp.provisioning_uri(nsid, issuer_name=issuer)
         return self.dto(link=uri)
 
     def verify(self, kind, gsid, code):
