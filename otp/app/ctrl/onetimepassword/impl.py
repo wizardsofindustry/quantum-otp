@@ -47,13 +47,15 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         # below code always being executed. To prevent this, we set the
         # Accept header to our default content type.
         mimetype = self.default_mimetype
+        body = None
         if 'Accept' in request.headers:
             mimetype = request.accept_mimetypes.best_match(self.image.accept)
             if mimetype is not None:
-                raise Exception(mimetype, request.headers)
                 # The client has requested to receive the OTP link
                 # as a QR image.
-                content = self.image.generate(content.link)
-                assert isinstance(content, bytes)
-        return self.render_to_response(content,
+                body = self.image.generate(content.link)
+                content = None
+                assert isinstance(body, bytes)
+        assert bool(body) ^ bool(content)
+        return self.render_to_response(ctx=content, body=body,
             content_type=mimetype, status_code=status)

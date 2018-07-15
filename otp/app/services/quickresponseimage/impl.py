@@ -1,3 +1,7 @@
+import io
+
+import qrcode
+
 from .base import BaseQuickResponseImageService
 
 
@@ -8,4 +12,7 @@ class QuickResponseImageService(BaseQuickResponseImageService):
 
     def generate(self, link):
         """Generates a QR-code holding `link`."""
-        raise NotImplementedError("Subclasses must override this method.")
+        buf = io.BytesIO()
+        qr = qrcode.make(link)
+        qr.save(buf, format='PNG')
+        return buf.getvalue()
