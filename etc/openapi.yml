@@ -76,11 +76,11 @@ paths:
         default:
           $ref: "#/components/responses/UncaughException"
 
-  /{kind}/{gsid}:
+  /{kind}:
     summary: >
       Provides an interface to create, regenerate or retrieve the
       One-Time Password (OTP) for the Subject identified in the
-      request URI.
+      request entity.
     x-endpoint:
       classname: OneTimePasswordEndpoint
       controller:
@@ -88,21 +88,21 @@ paths:
     parameters:
     - name: kind
       in: path
-      description: >
-        Specifies the type of OTP (totp hotp).
       required: true
       schema:
         type: string
-    - name: gsid
-      in: path
-      description: >
-        Identifies the Subject on which this operation is executed.
-      required: true
-      schema:
-        type: string
-        format: uuid
+        enum:
+        - totp
+        - hotp
     get:
       operationId: getotp
+      parameters:
+      - name: gsid
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
       summary: Retrieve the currently configured shared secret for a Subject.
       responses:
         200:
@@ -127,7 +127,27 @@ paths:
           $ref: "#/components/responses/UncaughException"
     post:
       operationId: createotp
-      summary: Generate a new OTP for the Subject identified in the request URI.
+      summary: Generate a new OTP for the Subject identified in the request entity.
+      requestBody:
+        description: >
+          This endpoint expects the Global Subject Identifier (GSID), the Issuer
+          name and a Natural Subject Identifier (NSID) to be present in the
+          request body.
+        content:
+          application/json:
+            schema:
+              required:
+              - gsid
+              - nsid
+              - issuer
+              properties:
+                gsid:
+                  type: string
+                  format: uuid
+                nsid:
+                  type: string
+                issuer:
+                  type: string
       responses:
         201:
           description: >
@@ -148,7 +168,27 @@ paths:
       operationId: createotp
       summary: >
         Regenerate an existing OTP for the Subject identified in the
-        request URI.
+        request entity.
+      requestBody:
+        description: >
+          This endpoint expects the Global Subject Identifier (GSID), the Issuer
+          name and a Natural Subject Identifier (NSID) to be present in the
+          request body.
+        content:
+          application/json:
+            schema:
+              required:
+              - gsid
+              - nsid
+              - issuer
+              properties:
+                gsid:
+                  type: string
+                  format: uuid
+                nsid:
+                  type: string
+                issuer:
+                  type: string
       responses:
         201:
           description: >
