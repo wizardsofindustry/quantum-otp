@@ -23,6 +23,11 @@ info:
     email: maintainer@api.example.com
   license:
     name: <enter your license>
+servers:
+- url: https://otp.dev.quantumframework.org:8443
+  description: Local development server
+- url: https://citadel.dev.quantumframework.org/otp
+  description: Local development server (Citadel)
 paths:
   /health/:
     summary: Reports the general health of the application.
