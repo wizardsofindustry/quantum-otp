@@ -15,7 +15,6 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
 
         Args:
             kind (string): specifies the type of OTP (``HOTP`` or ``TOTP``).
-            gsid (string): identifies the :class:`Subject`.
 
         Returns:
             :class:`~sq.interfaces.http.response.Response`
@@ -34,7 +33,6 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
 
         Args:
             kind (string): specifies the type of OTP (``HOTP`` or ``TOTP``).
-            gsid (string): identifies the :class:`Subject`.
 
         Returns:
             :class:`~sq.interfaces.http.response.Response`
