@@ -7,7 +7,7 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
     endpoint.
     """
 
-    async def post(self, request, kind, gsid, *args, **kwargs): #pylint: disable=arguments-differ
+    async def post(self, request, kind, gsid): #pylint: disable=arguments-differ
         """Generate a new One-Time Password for the :class`Subject`
         identified in the request URI.
 
@@ -23,7 +23,7 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
     async def put(self, request, kind, gsid, *args, **kwargs): #pylint: disable=arguments-differ
         raise NotImplementedError("Subclasses must override this method.")
 
-    async def get(self, request, kind, gsid, *args, **kwargs): #pylint: disable=arguments-differ
+    async def get(self, request, kind, gsid): #pylint: disable=arguments-differ
         """Returns the shared secret for the :class:`Subject`
         identified in the request URI.
 
