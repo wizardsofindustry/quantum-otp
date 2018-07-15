@@ -5,7 +5,7 @@ from sq.service import Service
 
 class BaseOneTimePasswordService(Service):
     cipher = ioc.class_property('LocalCipher')
-    repo = ioc.class_property('SubjectRepository')
+    repo = ioc.class_property('OneTimePasswordRepository')
     factory = ioc.class_property('SubjectFactory')
     finder = ioc.class_property('OneTimePasswordFinder')
 
