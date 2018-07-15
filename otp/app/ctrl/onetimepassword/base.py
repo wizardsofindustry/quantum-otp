@@ -22,22 +22,6 @@ class BaseOneTimePasswordCtrl(EndpointCtrl):
         """
         raise NotImplementedError("Subclasses must override this method.")
 
-    async def put(self, request, *args, **kwargs):
-        """This method specifies the signature for :meth:`OneTimePasswordCtrl.put()`
-        and should be implemented in the following file:
-
-            ./otp/ctrl/onetimepassword/impl.py
-        """
-        raise NotImplementedError("Subclasses must override this method.")
-
-    async def get(self, request, *args, **kwargs):
-        """This method specifies the signature for :meth:`OneTimePasswordCtrl.get()`
-        and should be implemented in the following file:
-
-            ./otp/ctrl/onetimepassword/impl.py
-        """
-        raise NotImplementedError("Subclasses must override this method.")
-
 
 #pylint: skip-file
 # !!! SG MANAGED FILE -- DO NOT EDIT -- VERSION:  !!!
