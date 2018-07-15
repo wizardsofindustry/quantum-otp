@@ -62,10 +62,16 @@ bases:
 # parameters in the method signature.
 methods:
 - name: generate
-  parameters: []
+  parameters:
+  - name: link
   args: no
   kwargs: no
-  doc: null
+  doc:
+    heading: >
+      Generates a QR-code holding `link`.
+    returns: >
+      A byte-sequence containing the QR-code in the ``application/png``
+      format.
 
 
 # A list containing dependencies from the inversion-of-control
