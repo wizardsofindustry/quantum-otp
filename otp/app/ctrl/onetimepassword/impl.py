@@ -37,11 +37,17 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         return self.render(request, self.finder.get_shared_secret(kind, gsid), 200)
 
     def render(self, request, status, content, *args, **kwargs):
-        mimetype = request.accept_mimetypes(self.image.accept)
+        # If the client does not provide the Accept header, werkzeufg
+        # assumes that any content type will do. This will lead to the
+        # below code always being executed. To prevent this, we set the
+        # Accept header to our default content type.
+        mimetype = self.default_mimetype
+        if 'Accept' in request.headers:
+            mimetype = request.accept_mimetypes.best_match(self.image.accept)
         if mimetype is not None:
             # The client has requested to receive the OTP link
             # as a QR image.
             content = self.image.generate(content.link)
             assert isinstance(content, bytes)
         return self.render_to_response(content,
-            mimetype=mimetype, status=status)
+            content_type=mimetype, status_code=status)
