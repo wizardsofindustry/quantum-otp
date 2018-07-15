@@ -21,15 +21,15 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         """
         if kwargs.get('kind') not in ('totp', 'hotp'):
             raise EndpointDoesNotExist(url=request.path)
-        return self.render(request, 201,
+        return self._render(request, 201,
             self.otp.generate(kwargs['kind'], **request.payload))
 
-    def render(self, request, status, content, *args, **kwargs):
+    def _render(self, request, status, content):
         # If the client does not provide the Accept header, werkzeufg
         # assumes that any content type will do. This will lead to the
         # below code always being executed. To prevent this, we set the
         # Accept header to our default content type.
-        mimetype = self.default_mimetype
+        mimetype = self.default_mimetype #pylint: disable=no-member
         body = None
         if 'Accept' in request.headers:
             mimetype = request.accept_mimetypes.best_match(self.image.accept)
@@ -40,5 +40,5 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
                 content = None
                 assert isinstance(body, bytes)
         assert bool(body) ^ bool(content)
-        return self.render_to_response(ctx=content, body=body,
+        return self.render_to_response(ctx=content, body=body, #pylint: disable=unexpected-keyword-arg
             content_type=mimetype, status_code=status)

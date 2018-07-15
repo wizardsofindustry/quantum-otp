@@ -1,3 +1,4 @@
+"""Declares :class:`OneTimePasswordRepository`."""
 import sq.lib.timezone
 
 from ...orm import OneTimePassword as OneTimePasswordDAO
@@ -5,6 +6,9 @@ from .base import BaseOneTimePasswordRepository
 
 
 class OneTimePasswordRepository(BaseOneTimePasswordRepository):
+    """Knows how to construct domain objects to and from the
+    persistence layer.
+    """
     columns = OneTimePasswordDAO.__mapper__.columns.keys()
 
     def persist_otp(self, persistable):
