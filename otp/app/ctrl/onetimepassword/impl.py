@@ -25,10 +25,10 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         return self.render(request, 201,
             self.otp.generate(kwargs['kind'], **request.payload))
 
-    async def put(self, request, kind, gsid, *args, **kwargs): #pylint: disable=arguments-differ
+    async def put(self, request, *args, **kwargs):
         raise NotImplementedError("Subclasses must override this method.")
 
-    async def get(self, request, kind, gsid): #pylint: disable=arguments-differ
+    async def get(self, request, *args, **kwargs):
         """Returns the shared secret for the :class:`Subject`
         identified in the request URI.
 
