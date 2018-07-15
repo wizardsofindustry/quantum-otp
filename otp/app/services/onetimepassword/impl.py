@@ -16,6 +16,7 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         uri = otp.provisioning_uri(nsid, issuer_name=issuer)
         dto = self.dto(
             storage_class='otp',
+            kind=kind,
             gsid=gsid,
             secret=secret,
             counter=getattr(otp, 'interval', 0) # initialize counter at 0 if HOTP
