@@ -7,4 +7,5 @@ class QuickResponseImageService(BaseQuickResponseImageService):
     ]
 
     def generate(self, link):
+        """Generates a QR-code holding `link`."""
         raise NotImplementedError("Subclasses must override this method.")
