@@ -188,7 +188,7 @@ paths:
             schema:
               required:
               - gsid
-              - otp
+              - code
               properties:
                 gsid:
                   type: string
