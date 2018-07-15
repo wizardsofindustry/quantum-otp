@@ -1,0 +1,59 @@
+#!/bin/sh
+export GIT_COMMITTER_DATE="2018-07-15T06:00:00"
+export GIT_AUTHOR_DATE="2018-07-15T06:00:00"
+cp ./otp/infra/orm.yml ../
+cp Quantumfile ../
+find . ! -name render-initial -delete
+mkdir -p ./otp/infra/orm && mv ../orm.yml ./otp/infra/orm.yml
+mv ../Quantumfile .
+git init && git add . && git commit -m "Initial commit"
+sg init otp --with-docker --with-http --with-rdbms\
+  -R pyotp==2.2.6\
+  -R cryptography==2.2.2\
+  -R "qrcode[pil]==6.0"
+sg compile
+sg openapi init --no-edit
+sg finder create OneTimePasswordFinder\
+    -m get_for_subject -i session:DatabaseSessionFactory -i cipher:LocalCipher
+git apply ../onetimepasswordfinder1.diff && git add -u && git commit -m "Configure OneTimePasswordFinder"
+sg controller create OneTimePasswordCtrl -m POST -m PUT -m GET -i otp:OneTimePasswordService\
+  -i image:QuickResponseImageService -i finder:OneTimePasswordFinder
+sg controller create VerificationCtrl -m POST -i otp:OneTimePasswordService
+sg compile
+sg service create app OneTimePasswordService -m generate -m verify -m uri\
+  -i cipher:LocalCipher -i repo:SubjectRepository -i factory:SubjectFactory\
+  -i finder:OneTimePasswordFinder\
+  -e sq.exceptions.ObjectDoesNotExist:SubjectDoesNotExist
+git apply ../onetimepasswordservice1.diff && git add -u && git commit -m "Configure OneTimePasswordService"
+sg service create app QuickResponseImageService -m generate
+git apply ../openapi.diff && git add -u && git commit -m "Create endpoints specification" && sg compile
+git apply ../openapi1.diff && git add -u && git commit -m "Set server URLs"
+git apply ../openapi2.diff && git add -u && git commit -m "Specify license and contact information"
+git apply ../openapi3.diff && git add -u && git commit -m "Specify POST /verify/"
+git apply ../openapi4.diff && git add -u && git commit -m "Change entity `otp` attribute to `code`"
+git apply ../openapi5.diff && git add -u && git commit -m "Mark code as required"
+git apply ../openapi6.diff && git add -u && git commit -m "Add 404 responses"
+git apply ../openapi7.diff && git add -u && git commit -m "Use HTTP for local development"
+git apply ../openapi8.diff && git add -u && git commit -m "Refactor endpoints"
+git apply ../work1.diff && git add -u && git commit -m "Implement VerificationCtrl.post()"
+git apply ../onetimepasswordctrl.diff && git add -u && git commit -m "Implement OneTimePasswordCtrl.post()"
+git apply ../onetimepasswordctr2.diff && git add -u && git commit -m "Implement OneTimePasswordCtrl.get()"
+git apply ../onetimepasswordctrl3.diff && git add -u && git commit -m "Remove unused arguments"
+sg compile
+git apply ../work2.diff && git add -u && git commit -m "Implement link creation (without persistence)"
+git apply ../work3.diff && git add -u && git commit -m "Fix broken stuff due to rendering script"
+git apply ../work4.diff && git add -u && git commit -m "Specify QuickResponseImageService.generate() parameters"
+git apply ../work5.diff && git add -u && git commit -m "Allow the link parameter"
+sg compile
+git apply ../fix-onetimepasswordservice.diff && git add -u && git commit -m "Fix class docstring compiler bug"
+git apply ../work6.diff && git add -u && git commit -m "Remove class attribute to prevent compiler fail"
+git apply ../work7.diff && git add -u && git commit -m "Implement QR-code rendering"
+git apply ../work8.diff && git add -u && git commit -m "Persist the generated QR-code"
+sg repository create OneTimePasswordRepository -i cipher:LocalCipher -i session:DatabaseSessionFactory -m persist_otp
+git apply ../work9.diff && git add -u && git commit -m "Configure OneTimePasswordRepository"
+git apply ../work10.diff && git add -u && git commit -m "Use OneTimePasswordRepository as dependency"
+sg compile
+git apply ../work11.diff && git add -u && git commit -m "Implement OneTimePasswordRepository.persist_otp()"
+git remote add origin git@github.com:wizardsofindustry/quantum-otp.git
+#git rebase -x 'git commit --amend --no-edit --date "$GIT_COMMITTER_DATE"' --root
+#git push --force --set-upstream origin master

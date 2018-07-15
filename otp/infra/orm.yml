@@ -1,0 +1,48 @@
+---
+relations:
+- relname: onetimepasswords
+  classname: OneTimePassword
+  description: >
+    Stores AES-256 GCM encypted shared secrets for Subjects maintained
+    by a Quantum system.
+  columns:
+  - name: gsid
+    primary_key: true
+    type: uuid
+    description: >
+      Specifies the Global Subject Identifier (GSID), uniquely
+      identifying a Subject within the boundaries of a Quantum
+      system.
+  - name: nsid
+    type: string
+    description: >
+      Specifies the Natural Subject Identifier (GSID), naturaly
+      identififying the Subject. This identifier is used for
+      display purposes in client applications only.
+  - name: generated
+    type: int64
+    description: >
+      The date/time at which the One-Time Password (OTP) was generated,
+      in milliseconds since the UNIX epoch.
+  - name: kind
+    type: string
+    description: >
+      Declares the type of OTP. Allowed values are C(ounter) or
+      T(ime-based).
+    choices: [C,T]
+    default:
+      type: string
+      value: T
+  - name: secret
+    type: string
+    description: >
+      A hex representation of the AES-256 encrypted shared secret.
+  - name: counter
+    type: int32
+    description: >
+      For counter-based OTPs, the current counter value. For time-based
+      OTPs, the interval.
+  - name: issuer
+    type: string
+    description: >
+      A human-readable description of the OTP issuer.
