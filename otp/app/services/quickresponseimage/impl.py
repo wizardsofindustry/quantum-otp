@@ -6,5 +6,5 @@ class QuickResponseImageService(BaseQuickResponseImageService):
         "image/png"
     ]
 
-    def generate(self):
+    def generate(self, link):
         raise NotImplementedError("Subclasses must override this method.")
