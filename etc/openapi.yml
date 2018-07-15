@@ -162,6 +162,55 @@ paths:
         default:
           $ref: "#/components/responses/UncaughException"
 
+  /verify/{kind}:
+    summary: >
+      Verifies a One-Time Password (OTP) for a Subject.
+    x-endpoint:
+      classname: VerificationEndpoint
+      controller:
+        qualname: otp.app.ctrl.VerificationCtrl
+    parameters:
+    - name: kind
+      in: path
+      description: >
+        Specifies the type of OTP (totp hotp).
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: verify
+      requestBody:
+        description: >
+          This endpoint expects the Global Subject Identifier (GSID) and
+          a One-Time Password (OTP) to be present in the request body.
+        content:
+          application/json:
+            schema:
+              required:
+              - gsid
+              - otp
+              properties:
+                gsid:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        200:
+          description: >
+            An OTP exists for the Subject identified in the request entity
+            and the provided value was correct.
+        401:
+          description: >
+            An OTP exists for this Subject but the value provided in the
+            request entity did not match.
+        403:
+          description: >
+            An OTP exists for this Subject but it has been blocked for
+            use as an authentication mechanism.
+        503:
+          $ref: "#/components/responses/ServiceNotAvailable"
+        default:
+          $ref: "#/components/responses/UncaughException"
 
 components:
   responses:
