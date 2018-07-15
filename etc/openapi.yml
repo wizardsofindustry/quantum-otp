@@ -117,6 +117,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedSecret"
+        404:
+          description: >
+            The Subject identified in the request URI does not
+            exist.
         503:
           $ref: "#/components/responses/ServiceNotAvailable"
         default:
@@ -208,6 +212,10 @@ paths:
           description: >
             An OTP exists for this Subject but it has been blocked for
             use as an authentication mechanism.
+        404:
+          description: >
+            The Subject identified in the request entity does not
+            exist.
         503:
           $ref: "#/components/responses/ServiceNotAvailable"
         default:
