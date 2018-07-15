@@ -192,7 +192,8 @@ paths:
               properties:
                 gsid:
                   type: string
-                otp:
+                  format: uuid
+                code:
                   type: string
       responses:
         200:
