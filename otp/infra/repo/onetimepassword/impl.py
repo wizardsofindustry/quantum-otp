@@ -14,5 +14,5 @@ class OneTimePasswordRepository(BaseOneTimePasswordRepository):
         dao = OneTimePasswordDAO(**persistable & self.columns)
         dao.secret = bytes.hex(self.cipher.encrypt(dao.secret.encode()))
         dao.generated = sq.lib.timezone.now()
-        self.session.add(dao)
+        self.session.merge(dao)
         self.session.flush()

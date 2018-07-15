@@ -24,21 +24,6 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         return self.render(request, 201,
             self.otp.generate(kwargs['kind'], **request.payload))
 
-    async def put(self, request, *args, **kwargs):
-        raise NotImplementedError("Subclasses must override this method.")
-
-    async def get(self, request, *args, **kwargs):
-        """Returns the shared secret for the :class:`Subject`
-        identified in the request URI.
-
-        Args:
-            kind (string): specifies the type of OTP (``HOTP`` or ``TOTP``).
-
-        Returns:
-            :class:`~sq.interfaces.http.response.Response`
-        """
-        return self.render(request, self.finder.get_shared_secret(kind, gsid), 200)
-
     def render(self, request, status, content, *args, **kwargs):
         # If the client does not provide the Accept header, werkzeufg
         # assumes that any content type will do. This will lead to the
