@@ -30,4 +30,8 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         """Verified that the correct OTP was provided by the client, for the
         identified Subject.
         """
-        raise NotImplementedError("Subclasses must override this method.")
+        if kind not in ('totp', 'hotp'):
+            raise ValueError(f'Invalid OTP type: {kind}')
+        otp = self.finder.get_for_subject(gsid)
+        if not otp.verify(code):
+            raise self.InvalidOneTimePassword
