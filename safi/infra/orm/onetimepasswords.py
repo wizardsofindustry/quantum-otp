@@ -9,6 +9,7 @@ class OneTimePassword(Relation):
     """Stores AES-256 GCM encypted shared secrets for Subjects maintained
     by a Quantum system.
     """
+
     __tablename__ = 'onetimepasswords'
 
     #: Specifies the Global Subject Identifier (GSID), uniquely
