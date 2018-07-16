@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-//  OTP JENKINS PIPELINE SCRIPT
+//  SAFI JENKINS PIPELINE SCRIPT
 //
 //  The use-case for this pipeline is preparing and packaging a
 //  release branch for quality assurance and acceptance testing. It
@@ -80,7 +80,7 @@ pipeline {
           // we have the latest version of the sg base image.
           // Put the Jenkins build identifier in the image
           // tag so that we can run concurrent builds.
-          image = docker.build("otp:${env.BUILD_ID}")
+          image = docker.build("safi:${env.BUILD_ID}")
         }
       }
     }
