@@ -1,4 +1,4 @@
-"""Start the main :mod:`otp` application using the
+"""Start the main :mod:`safi` application using the
 specified command-line parameters.
 """
 import argparse
@@ -10,13 +10,13 @@ import sq.runtime
 
 
 DEFAULT_SECRET_KEY = "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892"
-SECRET_KEY = os.environ.setdefault('OTP_SECRET_KEY', DEFAULT_SECRET_KEY)
-os.environ.setdefault('OTP_SECRET_KEY', "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892")
-os.environ.setdefault('OTP_RDBMS_DSN', "postgresql+psycopg2://otp:otp@rdbms:5432/otp")
+SECRET_KEY = os.environ.setdefault('SAFI_SECRET_KEY', DEFAULT_SECRET_KEY)
+os.environ.setdefault('SAFI_SECRET_KEY', "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892")
+os.environ.setdefault('SAFI_RDBMS_DSN', "postgresql+psycopg2://safi:safi@rdbms:5432/safi")
 
 
 class MainProcess(sq.runtime.MainProcess):
-    """The main :mod:`otp` process manager."""
+    """The main :mod:`safi` process manager."""
     framerate = 10
     components = [
         sq.runtime.HttpServer,
@@ -25,7 +25,7 @@ class MainProcess(sq.runtime.MainProcess):
 
 parser = argparse.ArgumentParser() #pylint: disable=invalid-name
 parser.add_argument('-c', dest='config',
-    default='./etc/otp.conf',
+    default='./etc/safi.conf',
     help="specifies the runtime configuration file (default: %(default)s)")
 parser.add_argument('--loglevel',
     help="specifies the logging verbosity (default: %(default)s)",
@@ -33,7 +33,7 @@ parser.add_argument('--loglevel',
 
 
 if __name__ == '__main__':
-    logger = logging.getLogger('otp') #pylint: disable=invalid-name
+    logger = logging.getLogger('safi') #pylint: disable=invalid-name
     args = parser.parse_args() #pylint: disable=invalid-name
     p = MainProcess(args, logger=logger) #pylint: disable=invalid-name
 

@@ -23,7 +23,7 @@ class ApplicationRuntimeMainTestCase(unittest.TestCase):
         self.spool = tempfile.mkdtemp()
         os.environ['AORTA_SPOOL_DIR'] = self.spool
 
-        self.argv = ['-c', './etc/otp.conf']
+        self.argv = ['-c', './etc/safi.conf']
         self.args = parser.parse_args(self.argv)
         self.app = MainProcess(self.args)
         self.process = threading.Thread(target=self.app.start, daemon=True)
