@@ -1,0 +1,15 @@
+#!/bin/sh
+export SAFI_RUNTIME=${SAFI_RUNTIME-service}
+export SAFI_CONFIG_FILE=${SAFI_CONFIG_FILE-/etc/safi/safi.conf}
+
+case $SAFI_RUNTIME in
+  migrations)
+    alembic upgrade head
+  ;;
+  noop)
+    break
+  ;;
+  service)
+    python3 -m safi.runtime -c $SAFI_CONFIG_FILE
+  ;;
+esac

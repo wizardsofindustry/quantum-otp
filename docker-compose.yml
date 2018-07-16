@@ -27,11 +27,18 @@
 #######################################################################
 version: '3'
 services:
+  safi_migrations:
+    build: .
+    environment:
+    - SAFI_RUNTIME=migrations
+    - SAFI_SECRET_KEY=a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892
+    - SAFI_RDBMS_DSN=postgresql+psycopg2://safi:safi@rdbms:5432/safi
+    depends_on:
+    - rdbms
   safi:
     build: .
     environment:
-    - SQ_TESTING_STAGE=${SQ_TESTING_STAGE-production}
-    - SQ_DISABLE_AUTH=${SQ_DISABLE_AUTH-false}
+    - SAFI_RUNTIME=${SAFI_RUNTIME-service}
     - SAFI_SECRET_KEY=a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892
     - SAFI_RDBMS_DSN=postgresql+psycopg2://safi:safi@rdbms:5432/safi
     depends_on:
