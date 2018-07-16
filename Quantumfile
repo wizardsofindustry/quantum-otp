@@ -24,7 +24,7 @@ package:
 
   # This is the name of the Python module that contains the application
   # code, and is also used as a general identifier for this service.
-  name: otp
+  name: safi
 
   # Python module requirements from PyPi. Specified as in a requirements.txt,
   # file.
@@ -36,13 +36,13 @@ package:
 
 # Application environment settings and variables.
 environ:
-  prefix: true # Prefix environment variables with OTP_
+  prefix: true # Prefix environment variables with SAFI_
   variables:
   - name: SECRET_KEY
     default: a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892
     comment: Not for production use!
   - name: RDBMS_DSN
-    default: postgresql+psycopg2://otp:otp@rdbms:5432/otp
+    default: postgresql+psycopg2://safi:safi@rdbms:5432/safi
 
 
 # The application is currently not configured as an event listener. To
@@ -66,7 +66,7 @@ listener:
   # Specifies the channel from which this application will receive
   # its event messages. Event messages are assumed to be routed
   # according to the criteria specified above.
-  channel: otp.events.ingress
+  channel: safi.events.ingress
 
 
 # Security related settings.
@@ -84,7 +84,7 @@ security:
     # be used in production. Additional hostnames may be specified in the `hostnames`
     # section.
     hostnames:
-    - otp
+    - safi
 
     crt: |
       -----BEGIN CERTIFICATE-----

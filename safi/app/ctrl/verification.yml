@@ -1,32 +1,32 @@
 #######################################################################
 #
-# CONTROLLER DEFINITION FOR ONETIMEPASSWORDCTRL
+# CONTROLLER DEFINITION FOR VERIFICATIONCTRL
 #
 # The definition provided in this file is used by SG to compile a
-# base class for the OneTimePasswordCtrl controller. For a
+# base class for the VerificationCtrl controller. For a
 # detailed explanation of configuration values, refer to the
 # comments below.
 #
 # The controller specified in this file will be compiled in the
 # following Python module:
 #
-#   otp.app.ctrl.onetimepassword
+#   safi.app.ctrl.verification
 #
 # To create the implementation for this controller, edit its
 # module at:
 #
-#   ./otp/app/ctrl/onetimepassword/impl.py
+#   ./safi/app/ctrl/verification/impl.py
 #
 #######################################################################
 
 # Specifies the name of the controller class. This value is also used
 # to generate a module name, amongst other uses. Therefor, for correct
 # operation of the SG compiler, this SHOULD NOT be changed.
-name: OneTimePasswordCtrl
+name: VerificationCtrl
 
 
 # Defines the controller implementation(s) that are used by the
-# OneTimePasswordCtrl base class. It may also be used to inherit
+# VerificationCtrl base class. It may also be used to inherit
 # from mixin classes. The elements are qualified names to Python
 # symbols e.g `sq.ctrl.EndpointCtrl`.
 bases:
@@ -57,7 +57,3 @@ methods:
 dependencies:
 - require: OneTimePasswordService
   attname: otp
-- require: QuickResponseImageService
-  attname: image
-- require: OneTimePasswordFinder
-  attname: finder

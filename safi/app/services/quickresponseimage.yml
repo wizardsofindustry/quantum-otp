@@ -1,28 +1,28 @@
 #######################################################################
 #
-# SERVICE DEFINITION FOR ONETIMEPASSWORDSERVICE
+# SERVICE DEFINITION FOR QUICKRESPONSEIMAGESERVICE
 #
 # The definition provided in this file is used by SG to compile a
-# base class for the OneTimePasswordService service. For a
+# base class for the QuickResponseImageService service. For a
 # detailed explanation of configuration values, refer to the
 # comments below.
 #
 # The service specified in this file will be compiled in the
 # following Python module:
 #
-#   otp.app.services.onetimepassword
+#   safi.app.services.quickresponseimage
 #
 # To create the implementation for this service, edit its
 # module at:
 #
-#   ./otp/app/services/onetimepassword/impl.py
+#   ./safi/app/services/quickresponseimage/impl.py
 #
 #######################################################################
 
 # Specifies the name of the service class. This value is also used
 # to generate a module name, amongst other uses. Therefor, for correct
 # operation of the SG compiler, this SHOULD NOT be changed.
-name: OneTimePasswordService
+name: QuickResponseImageService
 
 
 # Specifies the service layer. The SG identifies three types of services:
@@ -31,7 +31,7 @@ layer: app
 
 
 # Defines the service implementation(s) that are used by the
-# OneTimePasswordService base class. It may also be used to inherit
+# QuickResponseImageService base class. It may also be used to inherit
 # from mixin classes. The elements are qualified names to Python
 # symbols e.g `sq.service.Service`.
 bases:
@@ -63,32 +63,15 @@ bases:
 methods:
 - name: generate
   parameters:
-  - name: kind
-  - name: gsid
-  - name: nsid
-  - name: issuer
+  - name: link
   args: no
   kwargs: no
   doc:
     heading: >
-      Generates a new One-Time Password (OTP) for the identified
-      Subject.
+      Generates a QR-code holding `link`.
     returns: >
-      A string containing the shared secret, represented as a link
-      that can be interpreted by client applications.
-- name: verify
-  parameters:
-  - name: kind
-  - name: gsid
-  - name: code
-  args: no
-  kwargs: no
-  doc:
-    heading: >
-      Verified that the correct OTP was provided by the client,
-      for the identified Subject.
-    returns: >
-        A boolean indicating if the OTP was correct.
+      A byte-sequence containing the QR-code in the ``application/png``
+      format.
 
 
 # A list containing dependencies from the inversion-of-control
@@ -104,15 +87,7 @@ methods:
 # Make sure that all dependencies listed here are injected either
 # programmatically or using the configuration files in the
 # ./etc/ioc.conf.d directory.
-dependencies:
-- require: LocalCipher
-  attname: cipher
-- require: OneTimePasswordRepository
-  attname: repo
-- require: SubjectFactory
-  attname: factory
-- require: OneTimePasswordFinder
-  attname: finder
+dependencies: []
 
 
 # Specifies exception classes that the service will declare.
@@ -128,7 +103,4 @@ dependencies:
 #
 # If the `base` attribute is not defined, then the exception inherits
 # from Exception.
-exceptions:
-- name: InvalidOneTimePassword
-  base: sq.exceptions.AuthenticationFailed
-  description: null
+exceptions: []
