@@ -13,16 +13,11 @@ class OneTimePasswordCtrl(BaseOneTimePasswordCtrl):
         """Generate a new One-Time Password for the :class`Subject`
         identified in the request URI.
 
-        Args:
-            kind (string): specifies the type of OTP (``HOTP`` or ``TOTP``).
-
         Returns:
             :class:`~sq.interfaces.http.response.Response`
         """
-        if kwargs.get('kind') not in ('totp', 'hotp'):
-            raise EndpointDoesNotExist(url=request.path)
         return self._render(request, 201,
-            self.otp.generate(kwargs['kind'], **request.payload))
+            self.otp.generate('totp', **request.payload))
 
     def _render(self, request, status, content):
         # If the client does not provide the Accept header, werkzeufg
