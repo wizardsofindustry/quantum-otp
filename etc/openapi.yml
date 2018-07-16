@@ -76,87 +76,35 @@ paths:
         default:
           $ref: "#/components/responses/UncaughException"
 
-  /{kind}:
+  /generate/pin:
     summary: >
-      Provides an interface to create, regenerate or retrieve the
-      One-Time Password (OTP) for the Subject identified in the
-      request entity.
+      Provides an interface to create or regenerate the Personal Identification
+      Number (PIN) for the Subject identified in the request entity.
     x-endpoint:
-      classname: OneTimePasswordEndpoint
+      classname: PinEndpoint
       controller:
-        qualname: safi.app.ctrl.OneTimePasswordCtrl
-    parameters:
-    - name: kind
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-        - totp
-        - hotp
-    get:
-      operationId: getotp
-      parameters:
-      - name: gsid
-        in: query
-        required: true
-        schema:
-          type: string
-          format: uuid
-      summary: Retrieve the currently configured shared secret for a Subject.
-      responses:
-        200:
-          description: >
-            An OTP exists for the Subject identified in the request URI and
-            the shared secret is returned to the client.
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SharedSecret"
-        404:
-          description: >
-            The Subject identified in the request URI does not
-            exist.
-        503:
-          $ref: "#/components/responses/ServiceNotAvailable"
-        default:
-          $ref: "#/components/responses/UncaughException"
+        qualname: safi.app.ctrl.PinCtrl
     post:
       operationId: createotp
-      summary: Generate a new OTP for the Subject identified in the request entity.
+      summary: Generate a new PIN for the Subject identified in the request entity.
       requestBody:
         description: >
-          This endpoint expects the Global Subject Identifier (GSID), the Issuer
-          name and a Natural Subject Identifier (NSID) to be present in the
-          request body.
+          This endpoint expects the Global Subject Identifier (GSID) to be present
+          in the request payload.
         content:
           application/json:
             schema:
               required:
               - gsid
-              - nsid
-              - issuer
               properties:
                 gsid:
                   type: string
                   format: uuid
-                nsid:
-                  type: string
-                issuer:
-                  type: string
       responses:
         201:
           description: >
-            A new OTP is generated for the identified Subject.
+            A new PIN is generated for the identified Subject.
           content:
-            image/png:
-              schema:
-                type: string
-                format: binary
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedSecret"
@@ -164,11 +112,18 @@ paths:
           $ref: "#/components/responses/ServiceNotAvailable"
         default:
           $ref: "#/components/responses/UncaughException"
-    put:
+
+  /generate/otp:
+    summary: >
+      Provides an interface to create or regenerate the One-Time Password (OTP)
+      for the Subject identified in the request entity.
+    x-endpoint:
+      classname: OneTimePasswordEndpoint
+      controller:
+        qualname: safi.app.ctrl.OneTimePasswordCtrl
+    post:
       operationId: createotp
-      summary: >
-        Regenerate an existing OTP for the Subject identified in the
-        request entity.
+      summary: Generate a new OTP for the Subject identified in the request entity.
       requestBody:
         description: >
           This endpoint expects the Global Subject Identifier (GSID), the Issuer
@@ -261,6 +216,102 @@ paths:
         default:
           $ref: "#/components/responses/UncaughException"
 
+  /subject/{gsid}/challenge:
+    summary: >
+      Retrieve the Factors that may be used for interim authentication
+      challenges.
+    x-endpoint:
+      classname: SubjectChallengesEndpoint
+      controller:
+        qualname: safi.app.ctrl.SubjectChallengeCtrl
+    parameters:
+    - name: gsid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: get_challenge_methods
+      summary: >
+        Retrieve the Factors that may be used for interim authentication
+        challenges.
+      responses:
+        200:
+          description: >
+            One or more Factors were configured for the Subject identified
+            in the request URI and are usable for interim authentication
+            challenges.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - otp
+                  - password
+                  - pin
+                  - puk
+                  - u2f
+        404:
+          description:
+            No Factors were configured for the Subject identified in the
+            request URI or existing Factors are not usable as interim
+            authentication challenges. The array contained in the response
+            body is always empty.
+          content:
+            application/json:
+              schema:
+                example: []
+                type: array
+                items:
+                  type: string
+        503:
+          $ref: "#/components/responses/ServiceNotAvailable"
+        default:
+          $ref: "#/components/responses/UncaughException"
+
+  /authenticate:
+    summary: >
+      Authenticates a Subject based on the authentication factors contained in
+      the request entity.
+    x-endpoint:
+      classname: AuthenticationEndpoint
+      controller:
+        qualname: safi.app.ctrl.AuthenticationCtrl
+    post:
+      operationId: authenticate
+      requestBody:
+        description: >
+          Deserialize the authentication factors from the request payload and
+          establish the identity of the Subject specified by `gsid`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiFactor"
+      responses:
+        200:
+          description: >
+            The Factors contained in the request payload were valid and succesfully
+            established the identity of the specified Subject.
+        401:
+          description: >
+            The Factors could not establish the identity of the Subject
+        403:
+          description: >
+            The Factors established the identity of the Subject, but it has been
+            barred from authenticating.
+        404:
+          description: >
+            The Subject identified in the request entity does not
+            exist.
+        503:
+          $ref: "#/components/responses/ServiceNotAvailable"
+        default:
+          $ref: "#/components/responses/UncaughException"
+
+
 components:
   responses:
     ServiceNotAvailable:
@@ -278,6 +329,157 @@ components:
             $ref: "#/components/schemas/Error"
 
   schemas:
+    Factor:
+      description: >
+        Describes the authentication Factor specified by `using` for the
+        Subject identified by `gsid`.
+      type: object
+      nullable: false
+      oneOf:
+      - $ref: "#/components/schemas/OneTimePasswordFactor"
+      - $ref: "#/components/schemas/PersonalIdentificationNumberFactor"
+      discriminator:
+        propertyName: using
+        mapping:
+          otp: "#/components/schemas/OneTimePasswordFactor"
+          pin: "#/components/schemas/PersonalIdentificationNumberFactor"
+      required:
+      - gsid
+      - using
+      properties:
+        gsid:
+          description: >
+            A Global Subject Identifier (GSID) specifying the Subject to which
+            this Factor is applicable.
+          type: string
+          format: uuid
+        using:
+          description: >
+            Specifies the type of authentication factor that is contained in the
+            Factor object.
+          type: string
+          enum:
+          - otp
+          - password
+          - pin
+          - puk
+          - u2f
+
+    PersonalIdentificationNumberFactor:
+      description: >
+        Describes a Personal Identification Number (PIN) factor for the Subject
+        identified by `gsid`.
+      type: object
+      nullable: false
+      example:
+        using: pin
+        gsid: "00000000-0000-0000-0000-000000000000"
+        factor: "1234"
+      required:
+      - factor
+      properties:
+        factor:
+          description: >
+            The Personal Identification Number (PIN) provisioned to the
+            Subject.
+          type: integer
+          format: int32
+          nullable: false
+
+    OneTimePasswordFactor:
+      description: >
+        Describes a One-Time Password (OTP) factor for the Subject
+        identified by `gsid`.
+      type: object
+      nullable: false
+      example:
+        using: otp
+        gsid: "00000000-0000-0000-0000-000000000000"
+        factor: "123456"
+      required:
+      - factor
+      properties:
+        factor:
+          description: >
+            The One-Time Password (OTP) generated by the client application
+            based on the shared secret.
+          type: integer
+          format: int32
+          nullable: false
+
+    PinUnlockKeyFactor:
+      description: >
+        Describes a PIN Unlock Key (PUK) factor for the Subject
+        identified by `gsid`.
+      type: object
+      nullable: false
+      example:
+        using: otp
+        gsid: "00000000-0000-0000-0000-000000000000"
+        factor: "12345678"
+      required:
+      - factor
+      properties:
+        factor:
+          description: >
+            The PIN Unlock Key (PUK) that the Subject may provide to unlock
+            a blocked Personal Identification Number (PIN).
+          type: integer
+          format: int32
+          nullable: false
+
+    PasswordFactor:
+      description: >
+        Describes a generic password factor for the Subject
+        identified by `gsid`.
+      type: object
+      nullable: false
+      example:
+        using: password
+        gsid: "00000000-0000-0000-0000-000000000000"
+        factor: "the quick yellow penguin slid in the lazy dogs dms"
+      required:
+      - factor
+      properties:
+        factor:
+          description: >
+            The shared secret between the client and the SAFI service.
+          type: string
+          nullable: false
+
+    MultiFactor:
+      description: >
+        Specifies a set of authentication Factors in order to establish
+        the identity of a Subject.
+      type: object
+      nullable: false
+      example:
+        gsid: "00000000-0000-0000-0000-000000000000"
+        factors:
+        - using: otp
+          factor: "789903"
+        - using: password
+          factor: "the quick yellow penguin slid in the lazy dogs dms"
+      required:
+      - gsid
+      - factors
+      properties:
+        gsid:
+          description: >
+            A Global Subject Identifier (GSID) specifying the Subject to which
+            this Factor is applicable.
+          type: string
+          format: uuid
+        factors:
+          description: >
+            The Factors to use in establishing the identity of the Subject specified
+            by `gsid`. The `gsid` member on individual Factor instances is ignored.
+          type: array
+          items:
+            x-qsa-exclude-fields:
+            - gsid
+            $ref: "#/components/schemas/Factor"
+
     SharedSecret:
       type: object
       nullable: false
