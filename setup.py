@@ -2,11 +2,11 @@
 from setuptools import find_packages
 from setuptools import setup
 
-import otp
+import safi
 
 setup(
-    name='otp',
-    version=otp.__version__,
+    name='safi',
+    version=safi.__version__,
     packages=find_packages()
 )
 

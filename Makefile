@@ -1,9 +1,9 @@
 #######################################################################
 #
-# OTP MAKEFILE
+# SAFI MAKEFILE
 #
 #	This Makefile exposes various targets related to the compiling and
-# building of the `otp` application.
+# building of the `safi` application.
 #
 #######################################################################
 
