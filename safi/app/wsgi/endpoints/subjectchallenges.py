@@ -1,25 +1,22 @@
 import ioc
 import sq.interfaces.http
-from sq.schema.fields import String
-from sq.schema.fields import String
-from sq.schema.fields import UUID
 
 
-class OneTimePasswordEndpoint(sq.interfaces.http.Endpoint):
+class SubjectChallengesEndpoint(sq.interfaces.http.Endpoint):
     """Deserializes, serializes and validates the structure of the input and output
     (requests and response) to its configured URL endpoint, which exposes the
     following functionality:
 
-        Provides an interface to create or regenerate the One-Time Password (OTP) for the Subject identified in the request entity.
+        Retrieve the Factors that may be used for interim authentication challenges.
 
 
-    A :class:`OneTimePasswordEndpoint` validates the structure of the request headers,
+    A :class:`SubjectChallengesEndpoint` validates the structure of the request headers,
     URL parameters, query parameters and entity prior to forwarding the
     request to its handler (controller).
 
-    The handler function (e.g., :meth:`~OneTimePasswordCtrl.get()`) may,
+    The handler function (e.g., :meth:`~SubjectChallengeCtrl.get()`) may,
     instead of a :class:`~sq.interfaces.http.Response` object, return a tuple
-    or a dictionary. The :class:`OneTimePasswordEndpoint` instance will interpret
+    or a dictionary. The :class:`SubjectChallengesEndpoint` instance will interpret
     these return values as follows:
 
     -   If the return value is a :class:`dict`, then the endpoint assumes that
@@ -37,24 +34,12 @@ class OneTimePasswordEndpoint(sq.interfaces.http.Endpoint):
     best-matching content type in the client ``Accept`` header. If no
     match is found, the client receives a ``406`` response.
 
-    During serialization, A schema may be selected by :class:`OneTimePasswordEndpoint`
+    During serialization, A schema may be selected by :class:`SubjectChallengesEndpoint`
     based on the response status code and content type, if one was defined in
     the OpenAPI definition for this API endpoint.
     """
-    pattern = "/generate/otp"
-    ctrl = ioc.class_property("OneTimePasswordCtrl")
-
-    #: The mapping below specifies the schema of structured data in the
-    #: request body per content type.
-    payload = {
-        "post": {
-            "application/json": {
-                "gsid": UUID(required=True),
-                "nsid": String(required=True),
-                "issuer": String(required=True)
-            }
-        }
-    }
+    pattern = "/subject/<gsid>/challenge"
+    ctrl = ioc.class_property("SubjectChallengeCtrl")
 
 
 # pylint: skip-file
