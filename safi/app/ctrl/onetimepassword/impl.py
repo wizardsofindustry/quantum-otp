@@ -1,6 +1,4 @@
 """Contains the concrete implementation of :class:`BaseOneTimePasswordCtrl`."""
-from sq.exceptions import EndpointDoesNotExist
-
 from .base import BaseOneTimePasswordCtrl
 
 
