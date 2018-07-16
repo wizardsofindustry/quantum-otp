@@ -2,4 +2,7 @@
 appication. See also :class:`~safi.app.wsgi.application.WSGIApplication`.
 """
 from .onetimepassword import OneTimePasswordCtrl
+from .subjectchallenge import SubjectChallengeCtrl
 from .verification import VerificationCtrl
+from .pin import PinCtrl
+from .authentication import AuthenticationCtrl
