@@ -10,7 +10,6 @@ COPY . /app
 COPY etc/ /etc/safi/
 
 WORKDIR /app
-RUN SQ_TESTING_PHASE=lint ./bin/run-tests
 RUN python3 setup.py install
 
 ENV AORTA_SPOOL_DIR /var/spool/aorta

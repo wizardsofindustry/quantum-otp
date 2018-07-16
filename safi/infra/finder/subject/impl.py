@@ -1,3 +1,7 @@
+import sqlalchemy
+from sqlalchemy.sql import expression
+
+from ...orm import OneTimePassword
 from .base import BaseSubjectFinder
 
 
@@ -8,4 +12,8 @@ class SubjectFinder(BaseSubjectFinder):
         available for interim authentication challenges against the Subject
         identified by string `gsid`.
         """
-        raise NotImplementedError("Subclasses must override this method.")
+        Q1 = sqlalchemy.select([sqlalchemy.literal('otp').label('type')])\
+            .where(OneTimePassword.gsid == gsid)\
+            .alias('otp')
+
+        return self.dto(factors=[row.type for row in self.session.query(Q1)])

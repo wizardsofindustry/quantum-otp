@@ -84,7 +84,9 @@ methods:
 # Make sure that all dependencies listed here are injected either
 # programmatically or using the configuration files in the
 # ./etc/ioc.conf.d directory.
-dependencies: []
+dependencies:
+- require: DatabaseSessionFactory
+  attname: session
 
 
 # Specifies exception classes that the finder will declare.
