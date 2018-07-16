@@ -1,4 +1,5 @@
 """Contains the base class for :class:`SubjectChallengeCtrl`."""
+import ioc
 from sq.ctrl import EndpointCtrl
 
 class BaseSubjectChallengeCtrl(EndpointCtrl):
@@ -9,6 +10,7 @@ class BaseSubjectChallengeCtrl(EndpointCtrl):
     This class encapsulates external dependencies (such as the inversion-of-control
     requirements) and specifies the interface for the concrete implementation.
     """
+    subject = ioc.class_property('SubjectFinder')
 
     async def get(self, request, *args, **kwargs):
         """This method specifies the signature for :meth:`SubjectChallengeCtrl.get()`
