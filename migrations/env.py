@@ -6,19 +6,19 @@ from sqlalchemy import create_engine
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-import otp.infra.orm
+import safi.infra.orm
 
 
 config = context.config
 fileConfig(config.config_file_name)
-target_metadata = otp.infra.orm.Relation.metadata
+target_metadata = safi.infra.orm.Relation.metadata
 
 
 def get_dsn():
     """Returns a string containing the Data Source Name (DSN) that
     is used by Alembic to establish a database connection.
     """
-    return os.getenv('OTP_RDBMS_DSN')
+    return os.getenv('SAFI_RDBMS_DSN')
 
 
 def run_migrations_offline():
