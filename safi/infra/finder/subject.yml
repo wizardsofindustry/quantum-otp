@@ -58,10 +58,17 @@ bases:
 # parameters in the method signature.
 methods:
 - name: available_challenges
-  parameters: []
+  parameters:
+  - name: gsid
   args: no
   kwargs: no
-  doc: null
+  doc:
+    heading: >
+      Returns a Data Transfer Object (DTO) containing the factors
+      that are available for interim authentication challenges
+      against the Subject identified by string `gsid`.
+    returns:
+      Data Transfer Object (DTO)
 
 
 # A list containing dependencies from the inversion-of-control
