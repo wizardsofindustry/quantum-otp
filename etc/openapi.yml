@@ -216,7 +216,7 @@ paths:
         default:
           $ref: "#/components/responses/UncaughException"
 
-  /subject/{gsid}/challenge:
+  /factors/{gsid}/challenge:
     summary: >
       Retrieve the Factors that may be used for interim authentication
       challenges.
@@ -232,7 +232,7 @@ paths:
         type: string
         format: uuid
     get:
-      operationId: get_challenge_methods
+      operationId: get_challenge_factors
       summary: >
         Retrieve the Factors that may be used for interim authentication
         challenges.
