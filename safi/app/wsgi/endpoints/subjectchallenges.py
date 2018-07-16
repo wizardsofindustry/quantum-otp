@@ -38,7 +38,7 @@ class SubjectChallengesEndpoint(sq.interfaces.http.Endpoint):
     based on the response status code and content type, if one was defined in
     the OpenAPI definition for this API endpoint.
     """
-    pattern = "/subject/<gsid>/challenge"
+    pattern = "/factors/<gsid>/challenges"
     ctrl = ioc.class_property("SubjectChallengeCtrl")
 
 
