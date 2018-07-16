@@ -1,4 +1,5 @@
 """Test suites for the application runtime."""
+import logging
 import os
 import shutil
 import signal
@@ -20,6 +21,7 @@ class ApplicationRuntimeMainTestCase(unittest.TestCase):
     """
 
     def setUp(self):
+        logging.disable(logging.CRITICAL)
         self.spool = tempfile.mkdtemp()
         os.environ['AORTA_SPOOL_DIR'] = self.spool
 
@@ -34,6 +36,7 @@ class ApplicationRuntimeMainTestCase(unittest.TestCase):
         self.app.on_interrupt(signal.SIGTERM, None)
         if self.process.is_alive():
             self.process.join()
+        logging.disable(logging.NOTSET)
 
     @sq.test.integration
     def test_application_starts(self):
