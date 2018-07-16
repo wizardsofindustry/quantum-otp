@@ -1,7 +1,7 @@
 #!/bin/sh
 #######################################################################
 #
-#  TEST RUNNER
+# SAFI TEST RUNNER
 #
 #  Unit:
 #    Atomic tests of the application codebase.
@@ -25,7 +25,7 @@
 SQ_TESTING_PHASE=${SQ_TESTING_PHASE-"unit"}
 SQ_DISABLE_AUTH=${SQ_DISABLE_AUTH-"1"}
 BUILD_ID=${BUILD_ID-"0"} # Used to allow concurrent builds in the CI.
-MODULE_NAME=""
+MODULE_NAME="safi"
 MIN_PERCENTAGE="100"
 COVERAGE_FILE=".coverage.$SQ_TESTING_PHASE.$BUILD_ID"
 COVERAGE=coverage3
@@ -37,7 +37,7 @@ export COVERAGE_FILE
 echo "Running test phase '$SQ_TESTING_PHASE', build: $BUILD_ID"
 case $SQ_TESTING_PHASE in
   lint)
-    find ./ -iname "*.py" | xargs pylint\
+    find ./safi -iname "*.py" | xargs pylint\
       -d too-few-public-methods -d duplicate-code\
       -d bad-continuation -d line-too-long --ignore __init__.py
     RETVAL=`echo $?`
