@@ -16,7 +16,7 @@ import sq.runtime
 # secrets.
 if os.getenv('SAFI_SECRETS'):
     with open(os.getenv('SAFI_SECRETS')) as f:
-        secrets = yaml.safe_load(f.read())
+        secrets = yaml.safe_load(f.read()) #pylint: disable=invalid-name
     for key, value in secrets.items():
         os.environ.setdefault(key, value)
 
