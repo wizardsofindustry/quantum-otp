@@ -63,7 +63,8 @@ case $SQ_TESTING_PHASE in
     $COVERAGE combine .
     $COVERAGE report --include=$MODULE_NAME/* \
         --fail-under $MIN_PERCENTAGE -m\
-        --omit **/test_*
+        --omit **/test_*\
+        --skip-covered
     RETVAL=`echo $?`
   ;;
 esac
