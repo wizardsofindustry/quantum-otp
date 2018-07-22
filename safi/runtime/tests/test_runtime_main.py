@@ -24,6 +24,7 @@ class ApplicationRuntimeMainTestCase(unittest.TestCase):
         logging.disable(logging.CRITICAL)
         self.spool = tempfile.mkdtemp()
         os.environ['AORTA_SPOOL_DIR'] = self.spool
+        os.environ['SAFI_HTTP_PORT'] = str(sq.test.get_free_port())
 
         self.argv = ['-c', './etc/safi.conf']
         self.args = parser.parse_args(self.argv)

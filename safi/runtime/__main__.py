@@ -23,6 +23,7 @@ if os.getenv('SAFI_SECRETS'):
     del secrets
 
 
+os.environ['SQ_ENVIRON_PREFIX'] = 'SAFI'
 DEFAULT_SECRET_KEY = "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892"
 SECRET_KEY = os.environ.setdefault('SAFI_SECRET_KEY', DEFAULT_SECRET_KEY)
 os.environ.setdefault('SAFI_SECRET_KEY', "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892")
