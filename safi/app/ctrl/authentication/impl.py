@@ -11,4 +11,20 @@ class AuthenticationCtrl(BaseAuthenticationCtrl):
     """
 
     async def post(self, request, *args, **kwargs):
-        raise NotImplementedError("Subclasses must override this method.")
+        """Parse and deserialize the request body and authenticate
+        the specified **Subject** based on the factors enclosed in
+        the entity.
+        """
+        status = 401
+        ctx = {'state': "FAILURE"}
+        try:
+            self.auth.authenticate(request.payload.gsid,
+                request.payload.factors)
+            status = 200
+            ctx['state'] = 'SUCCESS'
+        except self.auth.SubjectDoesNotExist:
+            status = 404
+        except self.auth.InvalidFactor as e:
+            status = 401
+            ctx['failed'] = e.args[0]
+        return self.render_to_response(ctx=ctx, status_code=status)

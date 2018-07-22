@@ -2,9 +2,14 @@
 export SAFI_RUNTIME=${SAFI_RUNTIME-service}
 export SAFI_CONFIG_FILE=${SAFI_CONFIG_FILE-/etc/safi/safi.conf}
 
+
 case $SAFI_RUNTIME in
   migrations)
     alembic upgrade head
+  ;;
+  shell)
+    ./bin/shell
+    break
   ;;
   noop)
     break

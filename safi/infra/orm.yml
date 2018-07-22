@@ -5,6 +5,14 @@ relations:
   description: >
     Stores AES-256 GCM encypted shared secrets for Subjects maintained
     by a Quantum system.
+  fixtures:
+  - gsid: 00000000-0000-0000-0000-000000000000
+    nsid: test@quantumframework.org
+    generated: 1532636411233
+    kind: T
+    secret: bc35a790bde46cd4569597cd0000000000000000581af7b130a3bb03c8fdfabb98d3c23546689530397fa72bb6b379176fd227f7
+    counter: 30
+    issuer: SAFI Test Case
   columns:
   - name: gsid
     primary_key: true

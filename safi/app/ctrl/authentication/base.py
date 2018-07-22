@@ -1,4 +1,5 @@
 """Contains the base class for :class:`AuthenticationCtrl`."""
+import ioc
 from sq.ctrl import EndpointCtrl
 
 class BaseAuthenticationCtrl(EndpointCtrl):
@@ -9,6 +10,7 @@ class BaseAuthenticationCtrl(EndpointCtrl):
     This class encapsulates external dependencies (such as the inversion-of-control
     requirements) and specifies the interface for the concrete implementation.
     """
+    auth = ioc.class_property('AuthenticationService')
 
     async def post(self, request, *args, **kwargs):
         """This method specifies the signature for :meth:`AuthenticationCtrl.post()`

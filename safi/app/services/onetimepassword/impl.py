@@ -24,7 +24,7 @@ class OneTimePasswordService(BaseOneTimePasswordService):
             counter=getattr(otp, 'interval', 0) # initialize counter at 0 if HOTP
         )
         self.repo.persist(dto)
-        return self.dto(link=uri)
+        return self.dto(link=uri, secret=secret)
 
     def verify(self, kind, gsid, code):
         """Verified that the correct OTP was provided by the client, for the

@@ -1,0 +1,105 @@
+#######################################################################
+#
+# FINDER DEFINITION FOR FACTORFINDER
+#
+# The definition provided in this file is used by SG to compile a
+# base class for the FactorFinder finder. A the Finder
+# classes abstract the querying of the datastore from the concrete
+# infrastructure implementation. For a detailed explanation of
+# configuration values, refer to the comments below.
+#
+# The finder specified in this file will be compiled in the
+# following Python module:
+#
+#   safi.infra.finder.factor
+#
+# To create the implementation for this finder, edit its
+# module at:
+#
+#   ./safi/infra/finder/factor/impl.py
+#
+#######################################################################
+
+# Specifies the name of the finder class. This value is also used
+# to generate a module name, amongst other uses. Therefor, for correct
+# operation of the SG compiler, this SHOULD NOT be changed.
+name: FactorFinder
+
+
+# Defines the finder implementation(s) that are used by the
+# FactorFinder base class. It may also be used to inherit
+# from mixin classes. The elements are qualified names to Python
+# symbols e.g `sq.readmodel.Finder`.
+bases:
+- sq.readmodel.Finder
+
+
+# This list specifies the methods that the finder class publicly
+# exposes. See the example below.
+#
+# methods:
+# - name: my_method_name
+#   parameters:
+#   - name: foo
+#   - name: bar
+#     default: None
+#   args: true
+#   kwargs: true
+#   doc:
+#     heading: >
+#       This is the opening line of the docstring for the
+#       my_method_name finder method. It is rendered before
+#       the args block.
+#     returns: >
+#       The return value. See the Napoleon documentation.
+#
+# Note that parameters are compiled in the order they were defined,
+# but parameters with defaults will always come after defaultless
+# parameters in the method signature.
+methods:
+- name: get
+  parameters:
+  - name: factor
+  args: no
+  kwargs: no
+  doc:
+    heading: >
+      Return the **Factor** for a given **Subject**.
+    returns:
+      Data Transfer Object (DTO)
+
+
+# A list containing dependencies from the inversion-of-control
+# container that should be added to the base class as class
+# properties. The elements in this list are mappings and must
+# have the following structure:
+#
+#   require: the name of the dependency
+#   desc: a description of this dependency and how it is
+#     used by the finder. This member is optional.
+#   attname: the name of the attribute on the finder class.
+#
+# Make sure that all dependencies listed here are injected either
+# programmatically or using the configuration files in the
+# ./etc/ioc.conf.d directory.
+dependencies:
+- require: DatabaseSessionFactory
+  attname: session
+- require: LocalCipher
+  attname: cipher
+
+
+# Specifies exception classes that the finder will declare.
+#
+# Example:
+#
+# exceptions:
+# - name: MyCustomException
+#   base: sq.exceptions.ObjectDoesNotExist
+#   doc: >
+#     This exception is raised when an object that the finder is
+#     trying to lookup does not exist.
+#
+# If the `base` attribute is not defined, then the exception inherits
+# from Exception.
+exceptions: []
