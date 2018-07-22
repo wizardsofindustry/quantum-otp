@@ -28,6 +28,8 @@ DEFAULT_SECRET_KEY = "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e
 SECRET_KEY = os.environ.setdefault('SAFI_SECRET_KEY', DEFAULT_SECRET_KEY)
 os.environ.setdefault('SAFI_SECRET_KEY', "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892")
 os.environ.setdefault('SAFI_RDBMS_DSN', "postgresql+psycopg2://safi:safi@rdbms:5432/safi")
+os.environ.setdefault('SAFI_HTTP_ADDR', "0.0.0.0")
+os.environ.setdefault('SAFI_HTTP_PORT', "8443")
 
 
 class MainProcess(sq.runtime.MainProcess):
