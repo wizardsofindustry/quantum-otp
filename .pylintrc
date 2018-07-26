@@ -9,3 +9,7 @@ generated-members=sq.*
 # Specifies tags that should emit warnings when found in the application
 # codebase.
 notes=
+
+
+[MESSAGES CONTROL]
+disable=abstract-method,invalid-name

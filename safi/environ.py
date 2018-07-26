@@ -1,6 +1,8 @@
 """Environment variables specified by the application Quantumfile."""
 import os
 
+import yaml
+
 
 DEFAULT_SECRET_KEY = "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892"
 

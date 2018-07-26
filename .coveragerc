@@ -1,5 +1,9 @@
 [run]
 branch = False
+omit =
+    safi/app/wsgi/application.py
+    safi/runtime/*
+    safi/environ.py
 
 [report]
 exclude_lines =

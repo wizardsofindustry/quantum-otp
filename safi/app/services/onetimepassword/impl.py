@@ -9,8 +9,7 @@ class OneTimePasswordService(BaseOneTimePasswordService):
 
     def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
-        if kind not in ('totp', 'hotp'):
-            raise ValueError(f'Invalid OTP type: {kind}')
+        assert kind == 'totp', "HOTP support is deprecated."
         secret = pyotp.random_base32()
         otp = getattr(pyotp, kind.upper())(secret)
         uri = otp.provisioning_uri(nsid, issuer_name=issuer)
@@ -25,13 +24,3 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         )
         self.repo.persist(dto)
         return self.dto(link=uri, secret=secret)
-
-    def verify(self, kind, gsid, code):
-        """Verified that the correct OTP was provided by the client, for the
-        identified Subject.
-        """
-        if kind not in ('totp', 'hotp'):
-            raise ValueError(f'Invalid OTP type: {kind}')
-        otp = self.finder.get_for_subject(gsid)
-        if not otp.verify(code):
-            raise self.InvalidOneTimePassword

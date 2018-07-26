@@ -14,8 +14,5 @@ class BaseOneTimePasswordService(Service):
     def generate(self, kind, gsid, nsid, issuer):
         raise NotImplementedError("Subclasses must override this method.")
 
-    def verify(self, kind, gsid, code):
-        raise NotImplementedError("Subclasses must override this method.")
-
 
 # pylint: skip-file

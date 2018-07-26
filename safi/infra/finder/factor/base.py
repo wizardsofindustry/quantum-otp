@@ -6,7 +6,7 @@ class BaseFactorFinder(Finder):
     session = ioc.class_property('DatabaseSessionFactory')
     cipher = ioc.class_property('LocalCipher')
 
-    def get(self, factor):
+    def get(self, gsid, using):
         raise NotImplementedError("Subclasses must override this method.")
 
 

@@ -59,7 +59,8 @@ bases:
 methods:
 - name: get
   parameters:
-  - name: factor
+  - name: gsid
+  - name: using
   args: no
   kwargs: no
   doc:

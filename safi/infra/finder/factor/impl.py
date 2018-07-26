@@ -9,11 +9,12 @@ class FactorFinder(BaseFactorFinder):
     """
     valid_factors = ('otp',)
 
-    def get(self, gsid, using): 
+    def get(self, gsid, using):
         """Return a **Factor** of the type specified by string `using`
         for the **Subject** identified by the Global Subject Identifier
         (GSID) string `gsid`.
         """
+        assert using in self.valid_factors
         ciphertext = self.session.query(OneTimePassword.secret)\
             .filter(OneTimePassword.gsid == gsid)\
             .scalar()

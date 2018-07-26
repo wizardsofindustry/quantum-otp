@@ -24,8 +24,8 @@ class AuthenticationService(BaseAuthenticationService):
             func = self._get_method(dto)
             try:
                 func(dto | {'gsid': gsid})
-            except self.InvalidFactor as e:
-                failed_factors.append(e.args[0])
+            except self.InvalidFactor as exc:
+                failed_factors.append(exc.args[0])
 
         if failed_factors:
             raise self.InvalidFactor(failed_factors)
