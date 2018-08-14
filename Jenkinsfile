@@ -29,11 +29,11 @@
 //  of the system being tested, are assumed to be mocked during all
 //  test phases.
 //
-//  A succesful build run will result in the containerized application
+//  A succesful build run may result in the containerized application
 //  being published to the Docker registry (specified by $DOCKER_REGISTRY)
-//  with the tag `latest-testing`. It may then be submitted for
-//  quality assurance testing, where the application is tested in a
-//  production-like environment.
+//  with the tags specified by the commit or branch-based tag. See the
+//  docker.ci.build_branches section in the Quantumfile for more
+//  information.
 //
 //  For the pipeline to function correctly, the following applications
 //  and plugins need to be installed in the Jenkins node(s):
@@ -57,20 +57,24 @@
 ///////////////////////////////////////////////////////////////////////
 def image
 def image_base
+def image_name
 def coverage_unit
 def coverage_integration
 def coverage_system
 def workspace
+def commit_tag
+def tags
 
 
 pipeline {
   agent any
 
   stages {
-    stage('Build test image') {
+    stage('Setup') {
       steps {
         script {
           workspace = pwd()
+          tags = []
 
           // Ensure that the base image is up-to-date
           image_base = docker.image('wizardsofindustry/quantum:latest')
@@ -80,17 +84,8 @@ pipeline {
           // we have the latest version of the sg base image.
           // Put the Jenkins build identifier in the image
           // tag so that we can run concurrent builds.
-          image = docker.build("safi:${env.BUILD_ID}")
-        }
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        script {
-          image.inside("--entrypoint='' -v ${workspace}:/app -e BUILD_ID=${env.BUILD_ID}") {
-            sh 'SQ_TESTING_PHASE=lint ./bin/run-tests'
-          }
+          image_name = 'safi'
+          image = docker.build("${image_name}:${env.BUILD_ID}")
         }
       }
     }
@@ -155,7 +150,7 @@ pipeline {
             writeFile file: ".coverage.unit.${env.BUILD_ID}", text: "${coverage_unit}"
             writeFile file: ".coverage.integration.${env.BUILD_ID}", text: "${coverage_integration}"
             writeFile file: ".coverage.system.${env.BUILD_ID}", text: "${coverage_system}"
-            sh 'coverage combine . && coverage report --fail-under 100'
+            sh 'coverage combine . && coverage report --fail-under 100 --omit **/test_*'
           }
         }
       }
@@ -169,14 +164,20 @@ pipeline {
       }
     }
 
-    stage('Ready-for-QA') {
-      when {
-        expression {
-          return env.BRANCH_NAME == 'master'
-        }
-      }
+    stage('Publish') {
       steps {
         script {
+          if (commit_tag) {
+            tags.add(commit_tag)
+          }
+
+          // Generate a tag based on the commit, commit tags and Quantumfile
+          // configuration.
+          switch(env.GIT_BRANCH) {
+            default:
+              sh 'echo "Branch is not a candidate for Docker image build."'
+          }
+
           // Configure a Docker repository for this application to push the
           // container to during this stage. Make should that you have also
           // set the registry credentials in the global Jenkins configuration,
