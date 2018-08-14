@@ -93,7 +93,7 @@ pipeline {
           // we have the latest version of the sg base image.
           // Put the Jenkins build identifier in the image
           // tag so that we can run concurrent builds.
-          image_name = 'safi'
+          image_name = 'wizardsofindustry/quantum-safi'
           image = docker.build("${image_name}:${env.BUILD_ID}")
         }
       }
@@ -202,11 +202,11 @@ pipeline {
               sh 'echo "Branch is not a candidate for Docker image build."'
           }
 
-          // Configure a Docker repository for this application to push the
-          // container to during this stage. Make should that you have also
-          // set the registry credentials in the global Jenkins configuration,
-          // if applicable. See also ./Quantumfile.
-          echo "Container push is not enabled."
+          if (tags) {
+            for (int i = 0; i < tags.size(); i++) {
+              image.push("${tags[i]}")
+            }
+          }
         }
       }
     }
