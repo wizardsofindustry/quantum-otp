@@ -28,6 +28,12 @@ if os.getenv('SAFI_SECRETS'):
 # module-level constants.
 os.environ.setdefault('SAFI_SECRET_KEY',
     "a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892")
+os.environ.setdefault('SAFI_DEBUG',
+    "1")
+os.environ.setdefault('SAFI_IOC_DEFAULTS',
+    "/etc/safi/ioc.conf")
+os.environ.setdefault('SAFI_IOC_DIR',
+    "/etc/safi/ioc.conf.d/")
 os.environ.setdefault('SAFI_RDBMS_DSN',
     "postgresql+psycopg2://safi:safi@rdbms:5432/safi")
 os.environ.setdefault('SAFI_HTTP_ADDR',
@@ -37,6 +43,9 @@ os.environ.setdefault('SAFI_HTTP_PORT',
 
 
 SECRET_KEY = os.getenv('SAFI_SECRET_KEY')
+DEBUG = os.getenv('SAFI_DEBUG', '').lower() in ('yes', '1', 'true')
+IOC_DEFAULTS = os.getenv('SAFI_IOC_DEFAULTS')
+IOC_DIR = os.getenv('SAFI_IOC_DIR')
 RDBMS_DSN = os.getenv('SAFI_RDBMS_DSN')
 HTTP_ADDR = os.getenv('SAFI_HTTP_ADDR')
 HTTP_PORT = os.getenv('SAFI_HTTP_PORT')
