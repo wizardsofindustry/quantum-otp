@@ -172,7 +172,7 @@ docker:
   # Specifies the Docker repository that is used for
   # this application, used by development tooling and
   # the CI/CD pipeline.
-  repository: null
+  repository: wizardsofindustry/quantum-safi
 
   # CI/CD configuration for containerization and image
   # publication.
