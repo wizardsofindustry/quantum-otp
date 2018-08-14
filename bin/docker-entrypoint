@@ -14,7 +14,13 @@ case $SAFI_RUNTIME in
   noop)
     break
   ;;
+  http)
+    export SAFI_COMPONENTS="http"
+    python3 -m safi.runtime -c $SAFI_CONFIG_FILE
+    break
+  ;;
   service)
     python3 -m safi.runtime -c $SAFI_CONFIG_FILE
+    break
   ;;
 esac
