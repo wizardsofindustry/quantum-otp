@@ -183,7 +183,7 @@ docker:
 
     # Indicates if the CI pipeline may use VCS tags to tag
     # containers.
-    use_tags: false
+    use_tags: False
 
     # Specifies the branches that will trigger a container build
     # by default.
