@@ -76,6 +76,15 @@ pipeline {
           workspace = pwd()
           tags = []
 
+          // Ensure that all tags are fetched and assign it to a variable. Note
+          // that if the branch contains multiple tags, the last one (as returned
+          // by git tag -l) will be used.
+          sh 'git fetch --tags'
+          commit_tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD | tail -1").trim()
+          if (commit_tag) {
+            sh "echo 'Commit tag is: ${commit_tag}'"
+          }
+
           // Ensure that the base image is up-to-date
           image_base = docker.image('wizardsofindustry/quantum:latest')
           image_base.pull()
@@ -174,6 +183,21 @@ pipeline {
           // Generate a tag based on the commit, commit tags and Quantumfile
           // configuration.
           switch(env.GIT_BRANCH) {
+            case 'master':
+              tags.add('latest')
+              break
+            case 'develop':
+              tags.add('latest-testing')
+              break
+            case ~/^(release|version|sprint)-.*$/:
+              tags.add("${env.GIT_BRANCH}-latest")
+              break
+            case ~/^(hotfix|fix)-.*$/:
+              tags.add("${env.GIT_BRANCH}-latest")
+              break
+            case ~/^(feature|task)-.*$/:
+              tags.add("${env.GIT_BRANCH}-latest")
+              break
             default:
               sh 'echo "Branch is not a candidate for Docker image build."'
           }
