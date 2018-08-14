@@ -179,7 +179,7 @@ docker:
   ci:
     # The credentials that the CI/CD pipeline may use to
     # login and publish to a Docker registry.
-    credentials_id: null
+    credentials_id: wizards-docker-repo
 
     # Indicates if the CI pipeline may use VCS tags to tag
     # containers.
