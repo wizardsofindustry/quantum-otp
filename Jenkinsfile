@@ -204,7 +204,9 @@ pipeline {
 
           if (tags) {
             for (int i = 0; i < tags.size(); i++) {
-              image.push("${tags[i]}")
+              withDockerRegistry([ credentialsId: 'wizards-docker-repo' ]) {
+                image.push("${tags[i]}")
+              }
             }
           }
         }
