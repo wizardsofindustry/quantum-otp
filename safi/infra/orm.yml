@@ -54,3 +54,10 @@ relations:
     type: string
     description: >
       A human-readable description of the OTP issuer.
+  - name: enabled
+    type: string
+    default:
+      type: literal
+      value: "False"
+    description: >
+      Indicates if the TOTP is enabled for this **Subject**.
