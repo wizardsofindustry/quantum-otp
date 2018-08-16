@@ -1,4 +1,6 @@
 """Declares :class:`AuthenticationService`."""
+import hmac
+
 import pyotp
 
 from .base import BaseAuthenticationService
@@ -38,7 +40,7 @@ class AuthenticationService(BaseAuthenticationService):
         if secret is None:
             raise self.SubjectDoesNotExist([dto.gsid], 'Subject')
         totp = pyotp.TOTP(secret)
-        if int(totp.now()) != dto.factor:
+        if not hmac.compare_digest(totp.now(), str(dto.factor)):
             raise self.InvalidFactor(dto.using)
 
     def _get_method(self, factor):

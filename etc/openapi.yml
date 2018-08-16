@@ -431,11 +431,11 @@ components:
       example:
         link: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0"
       required:
-      - code
+      - secret
       - link
       - qrcode
       properties:
-        code:
+        secret:
           description: >
             The shared secret used to generate TOTP codes.
           type: string

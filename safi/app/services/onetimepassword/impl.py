@@ -23,4 +23,4 @@ class OneTimePasswordService(BaseOneTimePasswordService):
             counter=getattr(otp, 'interval', 0) # initialize counter at 0 if HOTP
         )
         self.repo.persist(dto)
-        return self.dto(link=uri, code=secret)
+        return self.dto(link=uri, secret=secret)

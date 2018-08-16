@@ -19,7 +19,7 @@ class AuthenticationTestCase(sq.test.SystemTestCase):
         dto = self.service.generate('totp', self.gsid,
             "test@quantumframework.org", "SAFI Test Case")
         self.endpoint = AuthenticationEndpoint()
-        self.otp = pyotp.TOTP(dto.code)
+        self.otp = pyotp.TOTP(dto.secret)
 
     @sq.test.integration
     def test_succesful_authentication_by_totp(self):
