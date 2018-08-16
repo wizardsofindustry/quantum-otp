@@ -89,6 +89,8 @@ methods:
 dependencies:
 - require: FactorFinder
   attname: factors
+- require: OneTimePasswordService
+  attname: otp
 
 # Specifies exception classes that the service will declare.
 #
