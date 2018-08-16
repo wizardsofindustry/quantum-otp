@@ -7,7 +7,7 @@ import sq.schema
 class SharedSecret(sq.schema.Schema):
 
     #: The shared secret used to generate TOTP codes.
-    code = sq.schema.fields.String(
+    secret = sq.schema.fields.String(
         required=True,
         allow_none=False
     )
