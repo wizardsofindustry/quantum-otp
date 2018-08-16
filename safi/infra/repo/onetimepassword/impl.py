@@ -11,6 +11,20 @@ class OneTimePasswordRepository(BaseOneTimePasswordRepository):
     """
     columns = OneTimePasswordDAO.__mapper__.columns.keys()
 
+    def get(self, gsid):
+        """Return the OTP object specified by the query parameters."""
+        return self.session.query(OneTimePasswordDAO)\
+            .filter(OneTimePasswordDAO.gsid == gsid)\
+            .one()
+
+    def persist_dao(self, dao):
+        """Persists a Data Access Object (DAO) to the persistent
+        data store.
+        """
+        self.session.merge(dao)
+        self.session.flush()
+        return dao
+
     def persist_otp(self, persistable):
         """Persists a One-Time Password (OTP) object to the persistent data
         store.

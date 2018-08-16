@@ -17,6 +17,7 @@ class SubjectFinder(BaseSubjectFinder):
         """
         sub1 = sqlalchemy.select([sqlalchemy.literal('otp').label('type')])\
             .where(OneTimePassword.gsid == gsid)\
+            .where(OneTimePassword.enabled)\
             .alias('otp')
 
         return self.dto(factors=[row.type for row in self.session.query(sub1)])

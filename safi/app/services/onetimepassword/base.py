@@ -11,6 +11,12 @@ class BaseOneTimePasswordService(Service):
 
     InvalidOneTimePassword = type('InvalidOneTimePassword', (AuthenticationFailed,), {})
 
+    def enable(self, gsid):
+        raise NotImplementedError("Subclasses must override this method.")
+
+    def disable(self, gsid):
+        raise NotImplementedError("Subclasses must override this method.")
+
     def generate(self, kind, gsid, nsid, issuer):
         raise NotImplementedError("Subclasses must override this method.")
 

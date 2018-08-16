@@ -69,5 +69,13 @@ class OneTimePassword(Relation):
         nullable=False
     )
 
+    #: Indicates if the TOTP is enabled for this **Subject**.
+    enabled = sqlalchemy.Column(
+        sqlalchemy.String,
+        name='enabled',
+        nullable=False,
+        default=False
+    )
+
 
 # pylint: skip-file

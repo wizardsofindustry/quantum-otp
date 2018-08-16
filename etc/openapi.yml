@@ -431,12 +431,23 @@ components:
       example:
         link: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0"
       required:
+      - secret
       - link
+      - qrcode
       properties:
+        secret:
+          description: >
+            The shared secret used to generate TOTP codes.
+          type: string
         link:
           description: >
             A link that is recognized by client OTP applications to import the
             shared secret.
+          type: string
+        qrcode:
+          description: >
+            A base64-encoded PNG image that can be read by TOTP client
+            applications.
           type: string
 
     Version:
