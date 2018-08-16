@@ -42,6 +42,7 @@ class AuthenticationService(BaseAuthenticationService):
         totp = pyotp.TOTP(secret)
         if not hmac.compare_digest(totp.now(), str(dto.factor)):
             raise self.InvalidFactor(dto.using)
+        self.otp.enable(dto.gsid)
 
     def _get_method(self, factor):
         assert factor.using in ('otp',)

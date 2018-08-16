@@ -7,6 +7,18 @@ from .base import BaseOneTimePasswordService
 class OneTimePasswordService(BaseOneTimePasswordService):
     """Exposes an API to generate and verify One-Time Passwords (OTPs)."""
 
+    def enable(self, gsid):
+        """Disables the TOTP for the **Subject** identified by
+        `gsid`.
+        """
+        pass
+
+    def disable(self, gsid):
+        """Disables the TOTP for the **Subject** identified by
+        `gsid`.
+        """
+        pass
+
     def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
         assert kind == 'totp', "HOTP support is deprecated."
