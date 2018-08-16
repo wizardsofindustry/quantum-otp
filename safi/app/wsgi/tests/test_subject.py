@@ -37,18 +37,34 @@ class SubjectChallengesTestCase(sq.test.SystemTestCase):
         self.assertIn('factors', dto)
         self.assertNotIn('otp', dto['factors'])
 
-    @unittest.skip("Implement enable/disable of TOTP")
     @sq.test.integration
     def test_otp_is_in_available_challenges_after_first_use(self):
+        # Ensure that the TOTP is used before requesting the
+        # available challenges.
+        self.auth.authenticate(self.gsid, [self.factor])
+
         request = sq.test.request_factory(method='GET')
         response = self.run_callable(self.loop, self.endpoint.handle,
             request, gsid=self.gsid)
         self.assertEqual(response.status_code, 200, response.response)
 
-        self.auth.authenticate(self.gsid, [self.factor])
-
         dto = json.loads(response.response[0])
         self.assertIn('factors', dto)
         self.assertIn('otp', dto['factors'])
+
+    @sq.test.integration
+    def test_otp_is_not_available_in_challenges_after_disable(self):
+        self.auth.authenticate(self.gsid, [self.factor])
+        self.service.disable(self.gsid)
+
+        request = sq.test.request_factory(method='GET')
+        response = self.run_callable(self.loop, self.endpoint.handle,
+            request, gsid=self.gsid)
+        self.assertEqual(response.status_code, 200, response.response)
+
+        dto = json.loads(response.response[0])
+        self.assertIn('factors', dto)
+        self.assertNotIn('otp', dto['factors'])
+
 
 #pylint: skip-file

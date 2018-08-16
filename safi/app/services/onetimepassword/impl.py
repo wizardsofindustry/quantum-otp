@@ -11,13 +11,17 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         """Disables the TOTP for the **Subject** identified by
         `gsid`.
         """
-        pass
+        dao = self.repo.get(gsid)
+        dao.enabled = True
+        self.repo.persist_dao(dao)
 
     def disable(self, gsid):
         """Disables the TOTP for the **Subject** identified by
         `gsid`.
         """
-        pass
+        dao = self.repo.get(gsid)
+        dao.enabled = False
+        self.repo.persist_dao(dao)
 
     def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
