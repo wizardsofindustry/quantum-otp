@@ -68,6 +68,16 @@ methods:
       Return the **Factor** for a given **Subject**.
     returns:
       Data Transfer Object (DTO)
+- name: has_active_otp
+  parameters:
+  - name: kind
+  - name: gsid
+  doc:
+    heading: >
+      Return a boolean indicating if the Subject identified by `gsid`
+      has a TOTP and it is enabled (active).
+    returns:
+      bool
 
 
 # A list containing dependencies from the inversion-of-control

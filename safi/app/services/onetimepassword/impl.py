@@ -26,6 +26,8 @@ class OneTimePasswordService(BaseOneTimePasswordService):
     def generate(self, kind, gsid, nsid, issuer):
         """Generates a new One-Time Password (OTP) for the identified Subject."""
         assert kind == 'totp', "HOTP support is deprecated."
+        if self.finder.has_active_otp(kind, gsid):
+            raise self.OneTimePasswordActive()
         secret = pyotp.random_base32()
         otp = getattr(pyotp, kind.upper())(secret)
         uri = otp.provisioning_uri(nsid, issuer_name=issuer)
