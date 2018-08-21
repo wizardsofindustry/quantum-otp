@@ -1,5 +1,6 @@
 import ioc
 from sq.exceptions import AuthenticationFailed
+from sq.exceptions import DuplicateEntity
 from sq.service import Service
 
 
@@ -10,6 +11,7 @@ class BaseOneTimePasswordService(Service):
     finder = ioc.class_property('OneTimePasswordFinder')
 
     InvalidOneTimePassword = type('InvalidOneTimePassword', (AuthenticationFailed,), {})
+    OneTimePasswordActive = type('OneTimePasswordActive', (DuplicateEntity,), {})
 
     def enable(self, gsid):
         raise NotImplementedError("Subclasses must override this method.")
