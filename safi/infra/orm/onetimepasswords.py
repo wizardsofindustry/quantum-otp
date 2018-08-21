@@ -71,7 +71,7 @@ class OneTimePassword(Relation):
 
     #: Indicates if the TOTP is enabled for this **Subject**.
     enabled = sqlalchemy.Column(
-        sqlalchemy.String,
+        sqlalchemy.Boolean,
         name='enabled',
         nullable=False,
         default=False

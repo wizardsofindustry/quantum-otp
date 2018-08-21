@@ -55,7 +55,7 @@ relations:
     description: >
       A human-readable description of the OTP issuer.
   - name: enabled
-    type: string
+    type: boolean
     default:
       type: literal
       value: "False"
