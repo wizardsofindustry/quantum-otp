@@ -156,6 +156,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedSecret"
+        409:
+          description: >
+            An OTP was already generated and used for the Subject identified
+            in the request entity.
         503:
           $ref: "#/components/responses/ServiceNotAvailable"
         default:
