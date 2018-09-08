@@ -1,4 +1,5 @@
 """Contains the base class for :class:`PinCtrl`."""
+import ioc
 from sq.ctrl import EndpointCtrl
 
 class BasePinCtrl(EndpointCtrl):
@@ -9,6 +10,7 @@ class BasePinCtrl(EndpointCtrl):
     This class encapsulates external dependencies (such as the inversion-of-control
     requirements) and specifies the interface for the concrete implementation.
     """
+    pin = ioc.class_property('PinService')
 
     async def post(self, request, *args, **kwargs):
         """This method specifies the signature for :meth:`PinCtrl.post()`
