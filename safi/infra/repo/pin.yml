@@ -57,6 +57,17 @@ bases:
 # but parameters with defaults will always come after defaultless
 # parameters in the method signature.
 methods:
+- name: get
+  parameters:
+  - name: gsid
+  args: no
+  kwargs: no
+  doc:
+    heading: >
+      Return the Data Access Object (DAO) holding the PIN for the
+      **Subject** identified by `gsid`.
+    returns:
+      :class:`PIN`
 - name: exists
   parameters:
   - name: gsid
