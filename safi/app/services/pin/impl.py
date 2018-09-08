@@ -29,6 +29,9 @@ class PinService(BasePinService):
         identified by `gsid` is correct.
         """
         dao = self.repo.get(gsid)
+        if dao is None:
+            return False
+
         dao.last_used = timezone.now()
         result = hmac.compare_digest(dao.pin, pin)
         if not result:
