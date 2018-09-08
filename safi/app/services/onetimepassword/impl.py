@@ -23,7 +23,7 @@ class OneTimePasswordService(BaseOneTimePasswordService):
         dao.enabled = False
         self.repo.persist_dao(dao)
 
-    def generate(self, kind, gsid, nsid, issuer, force=False):
+    def generate(self, kind, gsid, nsid, issuer, force=False): #pylint: disable=too-many-arguments
         """Generates a new One-Time Password (OTP) for the identified Subject."""
         assert kind == 'totp', "HOTP support is deprecated."
         if self.finder.has_active_otp(kind, gsid) and not force:
