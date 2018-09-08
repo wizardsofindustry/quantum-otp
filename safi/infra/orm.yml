@@ -1,5 +1,40 @@
 ---
 relations:
+- relname: pin
+  classname: PIN
+  description: >
+    Stores a Personal Identification Number (PIN) and tracks the failed
+    attempts.
+  columns:
+  - name: gsid
+    primary_key: true
+    type: uuid
+    description: >
+      Specifies the Global Subject Identifier (GSID), uniquely
+      identifying a Subject within the boundaries of a Quantum
+      system.
+  - name: pin
+    type: string
+    description: >
+      The Personal Identification Number (PIN).
+  - name: failed
+    type: int32
+    default:
+      type: literal
+      value: "0"
+    description: >
+      Maintains the number of failed attempts. The system may choose to block
+      a PIN code if the number of failed attempts exceeds an arbitrary limit.
+      This counter is reset on succesful PIN authentication.
+  - name: last_used
+    type: int64
+    default:
+      type: literal
+      value: "0"
+    description: >
+      Specifies the date/time at which the PIN was last used, in milliseconds
+      since the UNIX epoch. This also registers failed attempts.
+
 - relname: onetimepasswords
   classname: OneTimePassword
   description: >
