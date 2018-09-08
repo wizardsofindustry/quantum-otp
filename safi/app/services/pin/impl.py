@@ -33,9 +33,12 @@ class PinService(BasePinService):
             return False
 
         dao.last_used = timezone.now()
-        result = hmac.compare_digest(dao.pin, pin)
+        result = hmac.compare_digest(dao.pin, str(pin))
         if not result:
             dao.failed += 1
+
+        # TODO: Quick hacky fix -- repo should recognize DAO
+        dao.storage_class = 'pin'
 
         self.repo.persist(dao)
         return result
