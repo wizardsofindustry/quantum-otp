@@ -15,7 +15,7 @@ class PinService(BasePinService):
       """
       if pin is None:
         pin = random.randint(10000, 99999)
-      self.repo.persist(self.dto(gsid=gsid, pin=pin))
+      self.repo.persist(self.dto(storage_class='pin', gsid=gsid, pin=pin))
       return self.dto(pin=pin)
 
     def verify(self, gsid, pin):
