@@ -1,5 +1,8 @@
 """Declares the :class`PinService`."""
+import hmac
 import secrets
+
+from quantum.lib import timezone
 
 from .base import BasePinService
 
@@ -22,4 +25,14 @@ class PinService(BasePinService):
         return self.dto(pin=pin)
 
     def verify(self, gsid, pin):
-        raise NotImplementedError("Subclasses must override this method.")
+        """Return a boolean indicating if the PIN `pin` for the **Subject**
+        identified by `gsid` is correct.
+        """
+        dao = self.repo.get(gsid)
+        dao.last_used = timezone.now()
+        result = hmac.compare_digest(dao.pin, pin)
+        if not result:
+            dao.failed += 1
+
+        self.repo.persist(dao)
+        return result

@@ -44,6 +44,10 @@ class AuthenticationService(BaseAuthenticationService):
             raise self.InvalidFactor(dto.using)
         self.otp.enable(dto.gsid)
 
+    def _authenticate_pin(self, dto):
+        if not self.pin.verify(dto.gsid, dto.factor):
+            raise self.InvalidFactor(dto.using)
+
     def _get_method(self, factor):
-        assert factor.using in ('otp',)
+        assert factor.using in ('otp', 'pin')
         return getattr(self, f'_authenticate_{factor.using}')
