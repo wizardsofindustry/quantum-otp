@@ -91,6 +91,8 @@ dependencies:
   attname: factors
 - require: OneTimePasswordService
   attname: otp
+- require: PinService
+  attname: pin
 
 # Specifies exception classes that the service will declare.
 #
