@@ -36,4 +36,6 @@ class PinRepository(BasePinRepository):
             )
         else:
             pin = persistable
-        return self.session.merge(pin)
+        dao = self.session.merge(pin)
+        self.session.flush()
+        return dao
