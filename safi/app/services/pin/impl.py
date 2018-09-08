@@ -13,6 +13,8 @@ class PinService(BasePinService):
       """Create a new PIN for the **Subject** identified by `gsid`. If
       `pin` is ``None``, then a code is automatically generated.
       """
+      if self.repo.exists(gsid):
+        raise self.DuplicatePinCode()
       if pin is None:
         pin = random.randint(10000, 99999)
       self.repo.persist(self.dto(storage_class='pin', gsid=gsid, pin=pin))
