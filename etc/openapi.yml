@@ -128,7 +128,9 @@ paths:
         description: >
           This endpoint expects the Global Subject Identifier (GSID), the Issuer
           name and a Natural Subject Identifier (NSID) to be present in the
-          request body.
+          request body. The `force` member of the provided datastructure indicates
+          if a secret must be generated, even if one-time passwords are already
+          enabled for the Subject.
         content:
           application/json:
             schema:
@@ -144,6 +146,9 @@ paths:
                   type: string
                 issuer:
                   type: string
+                force:
+                  type: boolean
+                  default: false
       responses:
         201:
           description: >
