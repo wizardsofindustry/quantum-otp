@@ -32,10 +32,13 @@ class PinService(BasePinService):
         if dao is None:
             return False
 
+        # TODO: Do not hard code this
+        if dao.failed >= 3:
+            return False
+
         dao.last_used = timezone.now()
         result = hmac.compare_digest(dao.pin, str(pin))
-        if not result:
-            dao.failed += 1
+        dao.failed = (dao.failed + 1) if not result else 0
 
         # TODO: Quick hacky fix -- repo should recognize DAO
         dao.storage_class = 'pin'

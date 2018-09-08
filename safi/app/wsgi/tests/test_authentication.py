@@ -17,6 +17,7 @@ class PinAuthenticationTestCase(sq.test.SystemTestCase):
     def setUp(self):
         super().setUp()
         self.service = ioc.require('PinService')
+        self.repo = ioc.require('PinRepository')
         self.endpoint = AuthenticationEndpoint()
         self.pin = "12345"
         self.service.createpin(self.gsid, self.pin)
@@ -62,6 +63,65 @@ class PinAuthenticationTestCase(sq.test.SystemTestCase):
         }
         response = self.request(self.endpoint.handle, **params)
         self.assertEqual(response.status_code, 401)
+
+    @sq.test.integration
+    def test_authentication_with_invalid_pin_fails(self):
+        params = {
+            'method': "POST",
+            'json': {
+                'gsid': self.gsid,
+                'factors': [
+                    {'using': 'pin', 'factor': '54321'}
+                ]
+            }
+        }
+        response = self.request(self.endpoint.handle, **params)
+        self.assertEqual(response.status_code, 401)
+
+    @sq.test.integration
+    def test_authentication_with_valid_pin_fails_after_n_failed_attempts(self):
+        params = {
+            'method': "POST",
+            'json': {
+                'gsid': self.gsid,
+                'factors': [
+                    {'using': 'pin', 'factor': '54321'}
+                ]
+            }
+        }
+        for i in range(3):
+            response = self.request(self.endpoint.handle, **params)
+
+        # The PIN should be blocked now.
+        params['json']['factors'][0]['factor'] = self.pin
+        response = self.request(self.endpoint.handle, **params)
+        self.assertEqual(response.status_code, 401)
+
+    @sq.test.integration
+    def test_authentication_with_valid_pin_resets_counter(self):
+        params = {
+            'method': "POST",
+            'json': {
+                'gsid': self.gsid,
+                'factors': [
+                    {'using': 'pin', 'factor': '54321'}
+                ]
+            }
+        }
+        for i in range(2):
+            response = self.request(self.endpoint.handle, **params)
+
+        dao = self.repo.get(self.gsid)
+        self.assertEqual(dao.failed, 2)
+        self.assertEqual(response.status_code, 401)
+
+        # The PIN should be blocked now.
+        params['json']['factors'][0]['factor'] = self.pin
+        response = self.request(self.endpoint.handle, **params)
+        self.assertEqual(response.status_code, 200)
+
+        dao = self.repo.get(self.gsid)
+        self.assertEqual(dao.failed, 0)
 
 
 class AuthenticationTestCase(sq.test.SystemTestCase):
