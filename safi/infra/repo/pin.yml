@@ -57,6 +57,17 @@ bases:
 # but parameters with defaults will always come after defaultless
 # parameters in the method signature.
 methods:
+- name: exists
+  parameters:
+  - name: gsid
+  args: no
+  kwargs: no
+  doc:
+    heading: >
+      Return a boolean indicating if the **Subject** identified by
+      `gsid` has a PIN.
+    returns:
+      bool
 - name: persist_pin
   parameters:
   - name: persistable
