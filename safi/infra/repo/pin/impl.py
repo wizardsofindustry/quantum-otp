@@ -7,6 +7,9 @@ from ...orm import PIN
 
 
 class PinRepository(BasePinRepository):
+    """Provides an interface to manipulate the persistent data storage
+    backend for PIN objects.
+    """
 
     def exists(self, gsid):
         """Return a boolean indicating if a PIN exists for the **Subject**
@@ -17,14 +20,14 @@ class PinRepository(BasePinRepository):
         return self.session.query(q).scalar()
 
     def persist_pin(self, persistable):
-      """Persists a persistable object representing a Personal Identification
-      Number (PIN) to the persistent storage backend.
-      """
-      if not isinstance(persistable, PIN):
-        pin = PIN(
-          gsid=persistable.gsid,
-          pin=persistable.pin
-        )
-      else:
-        pin = persistable
-      return self.session.merge(pin)
+        """Persists a persistable object representing a Personal Identification
+        Number (PIN) to the persistent storage backend.
+        """
+        if not isinstance(persistable, PIN):
+            pin = PIN(
+              gsid=persistable.gsid,
+              pin=persistable.pin
+            )
+        else:
+            pin = persistable
+        return self.session.merge(pin)

@@ -9,12 +9,38 @@ from ....infra import orm
 from ..endpoints import AuthenticationEndpoint
 
 
+class PinAuthenticationTestCase(sq.test.SystemTestCase):
+    gsid ="00000000-0000-0000-0000-000000000000"
+    metadata = orm.Relation.metadata
+
+    def setUp(self):
+        super().setUp()
+        self.service = ioc.require('PinService')
+        self.endpoint = AuthenticationEndpoint()
+        self.pin = "12345"
+        self.service.createpin(self.gsid, self.pin)
+
+    @sq.test.integration
+    def test_succesful_authentication_by_totp(self):
+        request = sq.test.request_factory(
+            method='POST',
+            json={
+                'gsid': self.gsid,
+                'factors': [
+                    {'using': 'pin', 'factor': self.pin}
+                ]
+            }
+        )
+        response = self.run_callable(self.loop, self.endpoint.handle, request)
+        self.assertEqual(response.status_code, 200, response.response)
+
+
 class AuthenticationTestCase(sq.test.SystemTestCase):
     gsid ="00000000-0000-0000-0000-000000000000"
     metadata = orm.Relation.metadata
 
     def setUp(self):
-        super(AuthenticationTestCase, self).setUp()
+        super().setUp()
         self.service = ioc.require('OneTimePasswordService')
         dto = self.service.generate('totp', self.gsid,
             "test@quantumframework.org", "SAFI Test Case")
