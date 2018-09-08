@@ -85,8 +85,8 @@ paths:
       controller:
         qualname: safi.app.ctrl.PinCtrl
     post:
-      operationId: createotp
-      summary: Generate a new PIN for the Subject identified in the request entity.
+      operationId: generatepin
+      summary: Generate or create a new PIN for the Subject identified in the request entity.
       requestBody:
         description: >
           This endpoint expects the Global Subject Identifier (GSID) to be present
@@ -100,10 +100,13 @@ paths:
                 gsid:
                   type: string
                   format: uuid
+                pin:
+                  type: string
+                  default: null
       responses:
         201:
           description: >
-            A new PIN is generated for the identified Subject.
+            A new PIN is generated or created for the identified Subject.
           content:
             application/json:
               schema:
