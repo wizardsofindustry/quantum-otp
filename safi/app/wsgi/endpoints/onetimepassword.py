@@ -1,5 +1,6 @@
 import ioc
 import sq.interfaces.http
+from sq.schema.fields import Boolean
 from sq.schema.fields import String
 from sq.schema.fields import String
 from sq.schema.fields import UUID
@@ -51,7 +52,8 @@ class OneTimePasswordEndpoint(sq.interfaces.http.Endpoint):
             "application/json": {
                 "gsid": UUID(required=True),
                 "nsid": String(required=True),
-                "issuer": String(required=True)
+                "issuer": String(required=True),
+                "force": Boolean(required=False, missing=False)
             }
         }
     }
