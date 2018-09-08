@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 
 import ioc
@@ -22,17 +23,45 @@ class PinAuthenticationTestCase(sq.test.SystemTestCase):
 
     @sq.test.integration
     def test_succesful_authentication_by_totp(self):
-        request = sq.test.request_factory(
-            method='POST',
-            json={
+        params = {
+            'method': 'POST',
+            'json': {
                 'gsid': self.gsid,
                 'factors': [
                     {'using': 'pin', 'factor': self.pin}
                 ]
             }
-        )
-        response = self.run_callable(self.loop, self.endpoint.handle, request)
+        }
+        response = self.request(self.endpoint.handle, **params)
         self.assertEqual(response.status_code, 200, response.response)
+
+    @sq.test.integration
+    def test_authentication_for_non_existing_gsid_fails(self):
+        params = {
+            'method': "POST",
+            'json': {
+                'gsid': bytes.hex(os.urandom(16)),
+                'factors': [
+                    {'using': 'pin', 'factor': '54321'}
+                ]
+            }
+        }
+        response = self.request(self.endpoint.handle, **params)
+        self.assertEqual(response.status_code, 401)
+
+    @sq.test.integration
+    def test_authentication_with_invalid_pin_fails(self):
+        params = {
+            'method': "POST",
+            'json': {
+                'gsid': self.gsid,
+                'factors': [
+                    {'using': 'pin', 'factor': '54321'}
+                ]
+            }
+        }
+        response = self.request(self.endpoint.handle, **params)
+        self.assertEqual(response.status_code, 401)
 
 
 class AuthenticationTestCase(sq.test.SystemTestCase):
