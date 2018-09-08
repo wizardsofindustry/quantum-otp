@@ -64,6 +64,33 @@ class OneTimePasswordTestCase(sq.test.SystemTestCase):
             response = self.run_callable(self.loop, self.endpoint.handle, request)
 
     @sq.test.integration
+    def test_duplicate_otp_active_succeeds_if_force_is_true(self):
+        dto = self.otp.generate('totp', self.gsid,
+            'test@quantumframework.org',
+            "SAFI Test Case")
+        otp = pyotp.TOTP(dto.secret)
+
+        # Authenticate using the OTP to ensure that its enabled.
+        self.auth.authenticate(self.gsid, [self.dto(using='otp', factor=otp.now())])
+
+        # This raises an error if force is not True.
+        request = sq.test.request_factory(
+            method='POST',
+            accept="application/json",
+            json={
+                'gsid': self.gsid,
+                'nsid': "test@quantumframework.org",
+                'issuer': "SAFI Test Case",
+                'force': True
+            }
+        )
+        response = self.run_callable(self.loop, self.endpoint.handle, request)
+
+        # Using the previous OTP, we can not authenticate.
+        with self.assertRaises(self.auth.InvalidFactor):
+            self.auth.authenticate(self.gsid, [self.dto(using='otp', factor=otp.now())])
+
+    @sq.test.integration
     def test_create_otp_as_link_for_subject(self):
         request = sq.test.request_factory(
             method='POST',

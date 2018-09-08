@@ -19,7 +19,7 @@ class BaseOneTimePasswordService(Service):
     def disable(self, gsid):
         raise NotImplementedError("Subclasses must override this method.")
 
-    def generate(self, kind, gsid, nsid, issuer):
+    def generate(self, kind, gsid, nsid, issuer, force=False):
         raise NotImplementedError("Subclasses must override this method.")
 
 

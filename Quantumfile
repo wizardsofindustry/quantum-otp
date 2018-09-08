@@ -29,6 +29,9 @@ app:
   - http
 
 
+django: null
+
+
 # Basic Python package configuration and settings.
 package:
   language: python
@@ -43,6 +46,25 @@ package:
   - pyotp==2.2.6
   - cryptography==2.2.2
   - qrcode[pil]==6.0
+
+
+# The i18n section specifies all settings related to internationalization
+# (i18n) and localization (l10n).
+i18n:
+
+  # The i18n.default_language setting specifies the language default
+  # for all components in the Quantum service.
+  default_language: en
+
+  # Specifies all languages that may be selected either by the end-user
+  # or runtime configuration variables.
+  languages:
+  - name: English
+    code: en
+
+  # Indicates that application URLs should be translated, if
+  # applicable.
+  translate_urls: true
 
 
 # Application environment settings and variables.
@@ -183,7 +205,7 @@ docker:
 
     # Indicates if the CI pipeline may use VCS tags to tag
     # containers.
-    use_tags: True
+    use_tags: true
 
     # Specifies the branches that will trigger a container build
     # by default.
