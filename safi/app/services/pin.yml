@@ -1,28 +1,28 @@
 #######################################################################
 #
-# SERVICE DEFINITION FOR AUTHENTICATIONSERVICE
+# SERVICE DEFINITION FOR PINSERVICE
 #
 # The definition provided in this file is used by SG to compile a
-# base class for the AuthenticationService service. For a
+# base class for the PinService service. For a
 # detailed explanation of configuration values, refer to the
 # comments below.
 #
 # The service specified in this file will be compiled in the
 # following Python module:
 #
-#   safi.app.services.authentication
+#   safi.app.services.pin
 #
 # To create the implementation for this service, edit its
 # module at:
 #
-#   ./safi/app/services/authentication/impl.py
+#   ./safi/app/services/pin/impl.py
 #
 #######################################################################
 
 # Specifies the name of the service class. This value is also used
 # to generate a module name, amongst other uses. Therefor, for correct
 # operation of the SG compiler, this SHOULD NOT be changed.
-name: AuthenticationService
+name: PinService
 
 
 # Specifies the service layer. The SG identifies three types of services:
@@ -31,7 +31,7 @@ layer: app
 
 
 # Defines the service implementation(s) that are used by the
-# AuthenticationService base class. It may also be used to inherit
+# PinService base class. It may also be used to inherit
 # from mixin classes. The elements are qualified names to Python
 # symbols e.g `sq.service.Service`.
 bases:
@@ -61,17 +61,28 @@ bases:
 # but parameters with defaults will always come after defaultless
 # parameters in the method signature.
 methods:
-- name: authenticate
+- name: createpin
   parameters:
   - name: gsid
-  - name: factors
+  - name: pin
+    default:
+      type: literal
+      value: "None"
+  args: no
+  kwargs: no
+  doc: null
+- name: verify
+  parameters:
+  - name: gsid
+  - name: pin
   args: no
   kwargs: no
   doc:
     heading: >
-      Authenticate a **Subject** using the provided authentication
-      factors.
-
+      Verifies that the PIN for the **Subject** identified by `gsid`
+      is correct.
+    returns: >
+      bool
 
 # A list containing dependencies from the inversion-of-control
 # container that should be added to the base class as class
@@ -87,12 +98,12 @@ methods:
 # programmatically or using the configuration files in the
 # ./etc/ioc.conf.d directory.
 dependencies:
-- require: FactorFinder
-  attname: factors
-- require: OneTimePasswordService
-  attname: otp
-- require: PinService
-  attname: pin
+- require: PinRepository
+  attname: repo
+  desc: >
+    Repository providing an interface to the Data Access Layer (DAL)
+    of the PIN data store.
+
 
 # Specifies exception classes that the service will declare.
 #
@@ -108,16 +119,8 @@ dependencies:
 # If the `base` attribute is not defined, then the exception inherits
 # from Exception.
 exceptions:
-- name: SubjectDoesNotExist
-  base: Exception
+- name: DuplicatePinCode
+  base: quantum.exceptions.DuplicateEntity
   doc: >
-    Indicates that a **Subject**, identified by a Global Subject
-    Identifier (GSID), does not exist.
-- name: InvalidFactor
-  base: Exception
-  doc: >
-    Indicates that a provided authentication factor did not validate.
-- name: SubjectIsBlocked
-  base: Exception
-  doc: >
-    Indicates that a **Subject** is being barred from authenticating.
+    Raised when the client tries to create a PIN for a Subject that
+    already has one.

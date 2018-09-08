@@ -9,4 +9,4 @@ class PinCtrl(BasePinCtrl):
     """
 
     async def post(self, request, *args, **kwargs):
-        raise NotImplementedError("Subclasses must override this method.")
+        return 201, self.pin.createpin(**request.payload)
