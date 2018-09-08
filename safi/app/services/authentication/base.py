@@ -5,6 +5,7 @@ from sq.service import Service
 class BaseAuthenticationService(Service):
     factors = ioc.class_property('FactorFinder')
     otp = ioc.class_property('OneTimePasswordService')
+    pin = ioc.class_property('PinService')
 
     SubjectDoesNotExist = type('SubjectDoesNotExist', (Exception,), {})
     InvalidFactor = type('InvalidFactor', (Exception,), {})
