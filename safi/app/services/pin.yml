@@ -68,6 +68,10 @@ methods:
     default:
       type: literal
       value: "None"
+  - name: force
+    default:
+      type: literal
+      value: "False"
   args: no
   kwargs: no
   doc: null
