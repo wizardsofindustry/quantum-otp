@@ -1,5 +1,6 @@
 import ioc
 import sq.interfaces.http
+from sq.schema.fields import Boolean
 from sq.schema.fields import String
 from sq.schema.fields import UUID
 
@@ -49,7 +50,8 @@ class PinEndpoint(sq.interfaces.http.Endpoint):
         "post": {
             "application/json": {
                 "gsid": UUID(required=True),
-                "pin": String(required=False, missing=None)
+                "pin": String(required=False, missing=None),
+                "force": Boolean(required=False, missing=False)
             }
         }
     }
