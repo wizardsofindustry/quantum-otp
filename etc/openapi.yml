@@ -103,6 +103,9 @@ paths:
                 pin:
                   type: string
                   default: null
+                force:
+                  type: boolean
+                  default: false
       responses:
         201:
           description: >
