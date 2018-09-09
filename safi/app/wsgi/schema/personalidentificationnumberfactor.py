@@ -11,7 +11,7 @@ class PersonalIdentificationNumberFactor(sq.schema.Schema):
 
     #: The Personal Identification Number (PIN) provisioned to the
     #: Subject.
-    factor = sq.schema.fields.Integer(
+    factor = sq.schema.fields.String(
         required=True,
         allow_none=False
     )
