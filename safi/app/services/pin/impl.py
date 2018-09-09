@@ -13,11 +13,11 @@ random = secrets.SystemRandom()
 class PinService(BasePinService):
     """Exposes the API to create, update and unblock PIN."""
 
-    def createpin(self, gsid, pin=None):
+    def createpin(self, gsid, pin=None, force=False):
         """Create a new PIN for the **Subject** identified by `gsid`. If
         `pin` is ``None``, then a code is automatically generated.
         """
-        if self.repo.exists(gsid):
+        if self.repo.exists(gsid) and not force:
             raise self.DuplicatePinCode()
         if pin is None:
             pin = random.randint(10000, 99999)

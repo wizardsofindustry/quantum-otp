@@ -58,5 +58,15 @@ class PinTestCase(sq.test.SystemTestCase):
         with self.assertRaises(self.pin.DuplicatePinCode):
             self.request(self.endpoint.handle, **params)
 
+    def test_set_pin_not_fails_if_existing_and_force(self):
+        """Set PIN using default parameters."""
+        params = {
+            'method': "POST",
+            'accept': "application/json",
+            'json': {'gsid': self.gsid, 'force': True}
+        }
+        self.request(self.endpoint.handle, **params)
+        self.request(self.endpoint.handle, **params)
+
 
 #pylint: skip-file
