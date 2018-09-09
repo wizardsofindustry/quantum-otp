@@ -8,7 +8,7 @@ class BasePinService(Service):
 
     DuplicatePinCode = type('DuplicatePinCode', (DuplicateEntity,), {})
 
-    def createpin(self, gsid, pin=None):
+    def createpin(self, gsid, pin=None, force=False):
         raise NotImplementedError("Subclasses must override this method.")
 
     def verify(self, gsid, pin):
