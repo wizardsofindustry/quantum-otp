@@ -339,8 +339,7 @@ components:
           description: >
             The Personal Identification Number (PIN) provisioned to the
             Subject.
-          type: integer
-          format: int32
+          type: string
           nullable: false
 
     OneTimePasswordFactor:
