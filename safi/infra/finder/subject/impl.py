@@ -22,5 +22,5 @@ class SubjectFinder(BaseSubjectFinder):
         pin = sqlalchemy.select([sqlalchemy.literal('pin').label('type')])\
             .where(PIN.gsid == gsid)
 
-        q = otp.union(pin)
+        q = otp.union(pin).alias('factors')
         return [row.type for row in self.session.query(q)]
