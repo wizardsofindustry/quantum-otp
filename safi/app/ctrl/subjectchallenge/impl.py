@@ -13,4 +13,4 @@ class SubjectChallengeCtrl(BaseSubjectChallengeCtrl):
         and return it to the client by including it as the response payload.
         """
         return self.render_to_response(
-            ctx=self.subject.available_challenges(gsid))
+            ctx={'factors': self.subject.available_challenges(gsid)})

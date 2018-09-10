@@ -2,6 +2,7 @@
 import sqlalchemy
 
 from ...orm import OneTimePassword
+from ...orm import PIN
 from .base import BaseSubjectFinder
 
 
@@ -15,9 +16,11 @@ class SubjectFinder(BaseSubjectFinder):
         available for interim authentication challenges against the Subject
         identified by string `gsid`.
         """
-        sub1 = sqlalchemy.select([sqlalchemy.literal('otp').label('type')])\
+        otp = sqlalchemy.select([sqlalchemy.literal('otp').label('type')])\
             .where(OneTimePassword.gsid == gsid)\
-            .where(OneTimePassword.enabled.is_(True))\
-            .alias('otp')
+            .where(OneTimePassword.enabled.is_(True))
+        pin = sqlalchemy.select([sqlalchemy.literal('pin').label('type')])\
+            .where(PIN.gsid == gsid)
 
-        return self.dto(factors=[row.type for row in self.session.query(sub1)])
+        q = otp.union(pin)
+        return [row.type for row in self.session.query(q)]
