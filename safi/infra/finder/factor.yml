@@ -1,3 +1,4 @@
+---
 #######################################################################
 #
 # FINDER DEFINITION FOR FACTORFINDER
@@ -61,8 +62,8 @@ methods:
   parameters:
   - name: gsid
   - name: using
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Return the **Factor** for a given **Subject**.

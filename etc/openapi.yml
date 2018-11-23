@@ -86,11 +86,13 @@ paths:
         qualname: safi.app.ctrl.PinCtrl
     post:
       operationId: generatepin
-      summary: Generate or create a new PIN for the Subject identified in the request entity.
+      summary: >
+        Generate or create a new PIN for the Subject identified in the request
+        entity.
       requestBody:
         description: >
-          This endpoint expects the Global Subject Identifier (GSID) to be present
-          in the request payload.
+          This endpoint expects the Global Subject Identifier (GSID) to be
+          present in the request payload.
         content:
           application/json:
             schema:
@@ -129,14 +131,16 @@ paths:
         qualname: safi.app.ctrl.OneTimePasswordCtrl
     post:
       operationId: createotp
-      summary: Generate a new OTP for the Subject identified in the request entity.
+      summary: >
+        Generate a new OTP for the Subject identified in the request
+        entity.
       requestBody:
         description: >
           This endpoint expects the Global Subject Identifier (GSID), the Issuer
           name and a Natural Subject Identifier (NSID) to be present in the
-          request body. The `force` member of the provided datastructure indicates
-          if a secret must be generated, even if one-time passwords are already
-          enabled for the Subject.
+          request body. The `force` member of the provided datastructure
+          indicates if a secret must be generated, even if one-time passwords
+          are already enabled for the Subject.
         content:
           application/json:
             schema:
@@ -253,8 +257,8 @@ paths:
       responses:
         200:
           description: >
-            The Factors contained in the request payload were valid and succesfully
-            established the identity of the specified Subject.
+            The Factors contained in the request payload were valid and
+            succesfully established the identity of the specified Subject.
         401:
           description: >
             The Factors could not establish the identity of the Subject
@@ -282,7 +286,9 @@ components:
             $ref: "#/components/schemas/ServiceNotAvailable"
 
     UncaughException:
-      description: An uncaught exception condition interrupted the request-response cycle.
+      description: >
+        An uncaught exception condition interrupted the request-response
+        cycle.
       content:
         application/json:
           schema:
@@ -430,8 +436,9 @@ components:
           format: uuid
         factors:
           description: >
-            The Factors to use in establishing the identity of the Subject specified
-            by `gsid`. The `gsid` member on individual Factor instances is ignored.
+            The Factors to use in establishing the identity of the Subject
+            specified by `gsid`. The `gsid` member on individual Factor
+            instances is ignored.
           type: array
           items:
             x-qsa-exclude-fields:
@@ -442,7 +449,7 @@ components:
       type: object
       nullable: false
       example:
-        link: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0"
+        link: "otpauth://hotp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App&counter=0" # yamllint disable-line
       required:
       - secret
       - link
@@ -503,7 +510,9 @@ components:
       nullable: false
       example:
         code: "INTERNAL_SERVER_ERROR"
-        detail: "An uncaught exception condition interrupted the request-response cycle."
+        detail: >
+          An uncaught exception condition interrupted the request-response
+          cycle.
         hint: "Contact the system administrator if the condition persists."
         id: "67dfd969-98ac-4057-b992-92e19f6ea7ac"
       required:
@@ -529,8 +538,8 @@ components:
           type: string
         id:
           description: >
-            An identifier for this specific exception condition, which may be used
-            for debugging purposes.
+            An identifier for this specific exception condition, which may be
+            used for debugging purposes.
           type: string
           format: uuid
 
@@ -540,7 +549,9 @@ components:
       example:
         code: "SERVICE_NOT_AVAILABLE"
         detail: "The service is currently not available. Try again later."
-        hint: "Cease making requests until after the period indicated in the Retry-After header."
+        hint: >
+          Cease making requests until after the period indicated in the
+          Retry-After header."
       required:
       - code
       - message

@@ -1,3 +1,4 @@
+---
 #######################################################################
 #
 # SERVICE DEFINITION FOR PINSERVICE
@@ -72,15 +73,15 @@ methods:
     default:
       type: literal
       value: "False"
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc: null
 - name: verify
   parameters:
   - name: gsid
   - name: pin
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Verifies that the PIN for the **Subject** identified by `gsid`

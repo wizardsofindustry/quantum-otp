@@ -45,7 +45,7 @@ relations:
     nsid: test@quantumframework.org
     generated: 1532636411233
     kind: T
-    secret: bc35a790bde46cd4569597cd0000000000000000581af7b130a3bb03c8fdfabb98d3c23546689530397fa72bb6b379176fd227f7
+    secret: bc35a790bde46cd4569597cd0000000000000000581af7b130a3bb03c8fdfabb98d3c23546689530397fa72bb6b379176fd227f7 # yamllint disable-line
     counter: 30
     issuer: SAFI Test Case
   columns:
@@ -72,7 +72,7 @@ relations:
     description: >
       Declares the type of OTP. Allowed values are C(ounter) or
       T(ime-based).
-    choices: [C,T]
+    choices: [C, T]
     default:
       type: string
       value: T

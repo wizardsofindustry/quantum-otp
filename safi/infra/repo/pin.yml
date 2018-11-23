@@ -1,3 +1,4 @@
+---
 #######################################################################
 #
 # REPOSITORY DEFINITION FOR PINREPOSITORY
@@ -60,8 +61,8 @@ methods:
 - name: get
   parameters:
   - name: gsid
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Return the Data Access Object (DAO) holding the PIN for the
@@ -71,8 +72,8 @@ methods:
 - name: exists
   parameters:
   - name: gsid
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Return a boolean indicating if the **Subject** identified by
@@ -82,8 +83,8 @@ methods:
 - name: persist_pin
   parameters:
   - name: persistable
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Persists a Personal Identification Number (PIN) object to the
