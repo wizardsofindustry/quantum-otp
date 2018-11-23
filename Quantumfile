@@ -354,7 +354,7 @@ docker:
   ci:
     # The credentials that the CI/CD pipeline may use to
     # login and publish to a Docker registry.
-    credentials_id: wizards-docker-repo
+    credentials_id: dockerhub.wizards
 
     # Indicates if the CI pipeline may use VCS tags to tag
     # containers.
@@ -367,8 +367,10 @@ docker:
       tag: latest
       always_deploy: false
     - name: develop
-      tag: latest-testing
-      always_deploy: false
+      tag: staging
+      env: staging
+      deployment: staging
+      always_deploy: true
     - pattern: "^(release|version|sprint)-.*$"
     - pattern: "^(hotfix|fix)-.*$"
     - pattern: "^(feature|task)-.*$"

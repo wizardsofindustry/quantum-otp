@@ -214,7 +214,10 @@ pipeline {
               tags.add('latest')
               break
             case 'develop':
-              tags.add('latest-testing')
+              env.QUANTUM_DEPLOYMENT_NAME = 'staging'
+              env.QUANTUM_DEPLOYMENT_ENV = 'staging'
+              force_deploy = true
+              tags.add('staging')
               break
             case '^(release|version|sprint)-.*$':
               break
@@ -243,10 +246,57 @@ pipeline {
           must_deploy = (!!commit_tag && !!env.QUANTUM_DEPLOYMENT_ENV)
           if (!!tags) {
             for (int i = 0; i < tags.size(); i++) {
-              withDockerRegistry([ credentialsId: 'wizards-docker-repo' ]) {
+              withDockerRegistry([ credentialsId: 'dockerhub.wizards' ]) {
                 image.push("${tags[i]}")
               }
             }
+          }
+        }
+      }
+    }
+
+    stage('Configure') {
+
+      // Configuration files are always deployed to the current environment
+      // if we detect changes, regardless of an actual container image being
+      // built. This ensures that the service, pod and job deploy steps always
+      // have access to the configs specified in the VCS.
+      when {
+        expression {
+          def files = findFiles(glob: "k8s/config.*")
+          return (files.length > 0) && !!must_deploy
+        }
+      }
+
+      parallel {
+
+        stage('Global') {
+          when {
+            expression {
+              return fileExists('k8s/config.common.yml')
+            }
+          }
+          steps {
+            kubernetesDeploy(
+              kubeconfigId: "k8s-${env.QUANTUM_DEPLOYMENT_ENV}",
+              configs: "k8s/config.common.yml",
+              enableConfigSubstitution: true
+            )
+          }
+        }
+
+        stage('Environment') {
+          when {
+            expression {
+              return fileExists("k8s/config.${env.QUANTUM_DEPLOYMENT_ENV}.yml")
+            }
+          }
+          steps {
+            kubernetesDeploy(
+              kubeconfigId: "k8s-${env.QUANTUM_DEPLOYMENT_ENV}",
+              configs: "k8s/config.${env.QUANTUM_DEPLOYMENT_ENV}.yml",
+              enableConfigSubstitution: true
+            )
           }
         }
       }
@@ -259,8 +309,57 @@ pipeline {
         }
       }
 
-      steps {
-        echo 'Deployments are not configured for this pipeline.'
+      parallel {
+
+        // Ensure that the Kubernetes Continuous Deploy plugin is installed on
+        // the Jenkins master. Additionally, a Kubernetes configuration must
+        // be added as a system-wide credential. The naming convention of
+        // 'k8s-<deployment environment name>' is used.
+        stage('Deploy services') {
+          when {
+            expression {
+              def files = findFiles(glob: "k8s/service.*")
+              return (files.length > 0)
+            }
+          }
+          steps {
+            kubernetesDeploy(
+              kubeconfigId: "k8s-${env.QUANTUM_DEPLOYMENT_ENV}",
+              configs: "k8s/service.*",
+              enableConfigSubstitution: true
+            )
+          }
+        }
+        stage('Deploy pods') {
+          when {
+            expression {
+              def files = findFiles(glob: "k8s/deployment.*")
+              return (files.length > 0)
+            }
+          }
+          steps {
+            kubernetesDeploy(
+              kubeconfigId: "k8s-${env.QUANTUM_DEPLOYMENT_ENV}",
+              configs: "k8s/deployment.*",
+              enableConfigSubstitution: true
+            )
+          }
+        }
+        stage('Deploy jobs') {
+          when {
+            expression {
+              def files = findFiles(glob: "k8s/job.*")
+              return (files.length > 0)
+            }
+          }
+          steps {
+            kubernetesDeploy(
+              kubeconfigId: "k8s-${env.QUANTUM_DEPLOYMENT_ENV}",
+              configs: "k8s/job.*",
+              enableConfigSubstitution: true
+            )
+          }
+        }
       }
     }
   } // End stages
