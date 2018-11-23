@@ -16,17 +16,54 @@ deployment:
   # in this list may be used to roll out the application(s) using
   # the deployment mechanisms supported by the Quantum Service
   # Assembler.
-  environments: []
+  environments:
+  - name: staging
 
   # Specifies the deployment system used to bring this app to a specific
   # environment. Supported systems are 'kubernetes'.
-  using: null
+  using: kubernetes
 
   # The deployment realm is either 'perimeter' (public-facing
   # services), 'citadel' (core internal service), business
   # (services implementing the business domain) or 'auxilary'
   # (supporting services).
   realm: citadel
+
+
+k8s:
+
+  # Common secrets that are injected into the containers
+  # irrespective of the deployment environment, name or
+  # role.
+  secrets:
+    env: []
+
+  # Specifies the namespace in the Kubernetes cluster where all
+  # objects related to this project are created.
+  namespace: citadel
+
+  # Specifies all deployments of this application.
+  deployments:
+  - role: api
+    enabled: true
+    secrets:
+      env: []
+    ports:
+    - port: 8443
+      protocol: TCP
+    pull_secret: dockerhub.wizards
+
+  # A list of commands that are created to Job objects in the
+  # application container.
+  jobs:
+  - name: migrate
+    enabled: true
+    command:
+    - alembic
+    - upgrade
+    - head
+    deadline: 120
+    pull_secret: dockerhub.wizards
 
 
 # This section describes the characteristics of the SG generated
