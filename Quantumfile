@@ -1,5 +1,9 @@
 ---
-# General project information.
+#######################################################################
+#
+#   GENERAL PROJECT CONFIGURATION
+#
+#######################################################################
 project:
   version: 1.0.0
   name: No project name specified
@@ -8,11 +12,58 @@ project:
 # environment for the safi service.
 deployment:
 
+  # Configures the deployment environments. Only environments specified
+  # in this list may be used to roll out the application(s) using
+  # the deployment mechanisms supported by the Quantum Service
+  # Assembler.
+  environments:
+  - name: staging
+
+  # Specifies the deployment system used to bring this app to a specific
+  # environment. Supported systems are 'kubernetes'.
+  using: kubernetes
+
   # The deployment realm is either 'perimeter' (public-facing
   # services), 'citadel' (core internal service), business
   # (services implementing the business domain) or 'auxilary'
   # (supporting services).
   realm: citadel
+
+
+k8s:
+
+  # Common secrets that are injected into the containers
+  # irrespective of the deployment environment, name or
+  # role.
+  secrets:
+    env: []
+
+  # Specifies the namespace in the Kubernetes cluster where all
+  # objects related to this project are created.
+  namespace: citadel
+
+  # Specifies all deployments of this application.
+  deployments:
+  - role: api
+    enabled: true
+    secrets:
+      env: []
+    ports:
+    - port: 8443
+      protocol: TCP
+    pull_secret: dockerhub.wizards
+
+  # A list of commands that are created to Job objects in the
+  # application container.
+  jobs:
+  - name: migrate
+    enabled: true
+    command:
+    - alembic
+    - upgrade
+    - head
+    deadline: 120
+    pull_secret: dockerhub.wizards
 
 
 # This section describes the characteristics of the SG generated
@@ -29,7 +80,38 @@ app:
   - http
 
 
+# Defines all controllers used to handle HTTP requests. Do not use this
+# section when the Quantum service is configured as a Django application.
+controllers: []
+
+
+#######################################################################
+##
+##  REPOSITORY DEFINITIONS
+##
+#######################################################################
+repositories: []
+
+
+#######################################################################
+##
+##  TASK DEFINITIONS
+##
+#######################################################################
+
+
+tasks:
+  # Set this value to 'yes' to enable and compile the task boilerplate
+  # code.
+  enabled: no
+  functions: []
+
+
 django: null
+
+# Configures the application to serve content over the World Wide
+# Web e.g. a website.
+www: false
 
 
 # Basic Python package configuration and settings.
@@ -52,6 +134,9 @@ package:
 # (i18n) and localization (l10n).
 i18n:
 
+  # Globally enable or disable internationalization for this project.
+  enabled: true
+
   # The i18n.default_language setting specifies the language default
   # for all components in the Quantum service.
   default_language: en
@@ -61,22 +146,35 @@ i18n:
   languages:
   - name: English
     code: en
+    enabled: true
 
   # Indicates that application URLs should be translated, if
   # applicable.
   translate_urls: true
 
+  # Enables or disables the Javascript i18n catalog; it is up to
+  # the web framework to decide how to serve this to the client.
+  enable_javascript: false
+
 
 # Application environment settings and variables.
 environ:
   prefix: true # Prefix environment variables with SAFI_
+
+  # Set the public ip address of the default network interface as
+  # an environment variable. Note that this assumes that the IP
+  # address does not changes during the application runtime.
+  public_ip: no
+
   variables:
   - name: SECRET_KEY
     default: a4f82ec9800ba3ae40a51717ffb2da128db4f0b25e2f30730c688ccb8e250892
     comment: Symmetric key for cryptographic operations.
+    secret: true
   - name: DEBUG
     default: '1'
     type: "switch"
+    isglobal: false
     comment: Run the application in debug mode.
   - name: IOC_DEFAULTS
     default: /etc/safi/ioc.conf
@@ -90,12 +188,28 @@ environ:
       configuration files.
   - name: RDBMS_DSN
     default: postgresql+psycopg2://safi:safi@rdbms:5432/safi
+    container: sqlite:///project.db
+    secret: true
+  - name: GIT_COMMIT
+    comments: >
+      The SHA-1 hash of the current Git commit.
   - name: HTTP_ADDR
     default: '0.0.0.0'
     comment: Listen address for the HTTP interface.
   - name: HTTP_PORT
     default: '8443'
     comment: Bind port for the HTTP interface.
+  - name: LOGLEVEL
+    default: 'INFO'
+    comment: >
+      Specifies the loglevel at application runtime.
+    isglobal: false
+  - name: ROLE
+    default: default
+    isglobal: false
+    comment: >
+      For multi-roled applications, this environment variable defines in which
+      role it should operate.
 
 
 # The application is currently not configured as an event listener. To
@@ -181,27 +295,66 @@ security:
 # service.
 testing:
   min_coverage: 100
+  lint: false
+
+
+#######################################################################
+##
+##  CI/CD CONFIGURATION
+##
+#######################################################################
+ci:
+
+  # Enforces that commits with changes to the Quantumfile are signed
+  # by trusted comitters.
+  signed_quantumfile: true
+
+  # Indicates that the CI/CD server must verify the GPG signature of
+  # commit tags before deploying the latest build to a certain
+  # environment.
+  #
+  # Setting ci.signed_deployments to true also implies that a commit
+  # tag is mandatory in order to deploy.
+  signed_deployments: true
+
+  # Instructs the CI/CD pipeline to build frontend assets on the slave
+  # instead of inside the container image.
+  build_assets: false
+
+  ssh:
+    # Identifies the SSH credentials that are used to access protected
+    # resources.
+    credentials: null
 
 
 # Docker configuration.
 docker:
+
+  #: Indicates if the code must be linted when building the
+  #: Docker container.
+  lint: false
 
   # The base image for the application container. This value
   # may be changed to use a custom image, instead of the
   # default Quantum base image.
   base: wizardsofindustry/quantum:latest
 
+  # Specify arbitrary filepaths that are copied to the container.
+
   # Specifies the Docker repository that is used for
   # this application, used by development tooling and
   # the CI/CD pipeline.
   repository: wizardsofindustry/quantum-safi
+
+  # Items to add to the .dockerignore file.
+  ignore: []
 
   # CI/CD configuration for containerization and image
   # publication.
   ci:
     # The credentials that the CI/CD pipeline may use to
     # login and publish to a Docker registry.
-    credentials_id: wizards-docker-repo
+    credentials_id: wizards.dockerhub
 
     # Indicates if the CI pipeline may use VCS tags to tag
     # containers.
@@ -212,8 +365,12 @@ docker:
     build_branches:
     - name: master
       tag: latest
+      always_deploy: false
     - name: develop
-      tag: latest-testing
+      tag: staging
+      env: staging
+      deployment: staging
+      always_deploy: true
     - pattern: "^(release|version|sprint)-.*$"
     - pattern: "^(hotfix|fix)-.*$"
     - pattern: "^(feature|task)-.*$"
@@ -233,3 +390,22 @@ sg:
 # Configuration file format version. Changing this will have dire
 # consequences.
 version: "1"
+
+
+#######################################################################
+##
+##  CODE QUALITY
+##
+#######################################################################
+lint:
+  javascript: false
+  python: false
+  scss: false
+  yaml: false
+
+
+#######################################################################
+#
+#   LANGUAGE SPECIFIC CONFIGURATION
+#
+#######################################################################

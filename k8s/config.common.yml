@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config.common.safi
+  namespace: citadel
+data:
+  # SAFI_GIT_COMMIT: ""
+  SAFI_HTTP_ADDR: "0.0.0.0"
+  SAFI_HTTP_PORT: "8443"
+  SAFI_IOC_DEFAULTS: "/etc/safi/ioc.conf"
+  SAFI_IOC_DIR: "/etc/safi/ioc.conf.d/"

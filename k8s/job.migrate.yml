@@ -1,0 +1,56 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: citadel
+  name: safi-job-migrate-${BUILD_ID}
+  labels:
+    app: safi
+    onfinish: "destroy"
+    env: ${QUANTUM_DEPLOYMENT_ENV}
+    deployment: ${QUANTUM_DEPLOYMENT_NAME}
+spec:
+  template:
+    metadata:
+      labels:
+        app: safi
+        onfinish: "destroy"
+        env: ${QUANTUM_DEPLOYMENT_ENV}
+        deployment: ${QUANTUM_DEPLOYMENT_NAME}
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: dockerhub.wizards
+      containers:
+      - image: wizardsofindustry/quantum-safi:${IMAGE_TAG}
+        name: safi-job-migrate
+        command:
+        - "alembic"
+        - "upgrade"
+        - "head"
+        env:
+        - name: QUANTUM_DEPLOYMENT_ENV
+          value: ${QUANTUM_DEPLOYMENT_ENV}
+        - name: QUANTUM_DEPLOYMENT_NAME
+          value: ${QUANTUM_DEPLOYMENT_NAME}
+        - name: SAFI_RDBMS_DSN
+          valueFrom:
+            secretKeyRef:
+              key: dsn
+              name: rdbms.safi
+        - name: SAFI_ROLE
+          value: default
+        - name: SAFI_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret_key
+              name: application.secret.safi
+        envFrom:
+        - configMapRef:
+            name: config.common.safi
+        - configMapRef:
+            name: config.${QUANTUM_DEPLOYMENT_ENV}.safi
+  activeDeadlineSeconds: 120
+  restartPolicy: Never
+  parallelism: 1
+  completions: 1

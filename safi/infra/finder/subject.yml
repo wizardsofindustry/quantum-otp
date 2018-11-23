@@ -1,3 +1,4 @@
+---
 #######################################################################
 #
 # FINDER DEFINITION FOR SUBJECTFINDER
@@ -60,8 +61,8 @@ methods:
 - name: available_challenges
   parameters:
   - name: gsid
-  args: no
-  kwargs: no
+  args: false
+  kwargs: false
   doc:
     heading: >
       Returns a Data Transfer Object (DTO) containing the factors

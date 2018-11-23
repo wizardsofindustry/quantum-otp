@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config.staging.safi
+  namespace: citadel
+data:
+  SAFI_DEBUG: "1"
+  SAFI_LOGLEVEL: "INFO"
+  SAFI_ROLE: "default"
